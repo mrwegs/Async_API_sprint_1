@@ -1,0 +1,68 @@
+version: '3.9'
+
+services:
+  async_api:
+    build:
+      context: .
+    container_name: async_api
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+       condition: service_healthy
+  elasticsearch:
+    image: elasticsearch:8.6.2
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+      interval: 5s
+      retries: 5
+    depends_on:
+      postgres:
+        condition: service_healthy
+  redis:
+    image: redis:7.2.4
+    container_name: redis
+    ports:
+      - "6379:6379"
+    expose:
+      - "6379"
+    depends_on:
+      postgres:
+        condition: service_healthy
+  kibana:
+    image: kibana:8.6.2
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+  postgres:
+    image: postgres:13.0-alpine
+    container_name: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql:ro
+    env_file:
+      - ./.env
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+
+volumes:
+  postgres_data:

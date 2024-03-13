@@ -10,4 +10,4 @@ COPY . .
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt --no-cache-dir
 
-ENTRYPOINT [ "python", "-m", "src.entypoint" ]
+ENTRYPOINT [ "python", "-m", "src.entrypoint" ]

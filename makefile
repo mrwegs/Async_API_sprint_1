@@ -17,3 +17,6 @@ clean:
 	rm -rf .pytest_cache/
 	find -iname "*.pyc" -delete
 	find -iname "__pycache__" -delete
+
+restart:
+	docker-compose down && docker-compose up -d --build

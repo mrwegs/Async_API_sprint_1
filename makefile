@@ -8,7 +8,7 @@ venv: .venv/touchfile
 	python -m venv .venv
 	pip install -r requirements.txt
 	touch .venv/touchfile
-	. .venv/bin/activate 
+	. .venv/bin/activate
 
 clean:
 	rm -rf .venv/

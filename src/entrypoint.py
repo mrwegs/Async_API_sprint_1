@@ -4,8 +4,8 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
-from core import config
-from core.logger import LOGGING
+from src.core import config
+from src.core.logger import LOGGING
 
 app = FastAPI(
     title=config.PROJECT_NAME,
@@ -16,7 +16,7 @@ app = FastAPI(
 
 if __name__ == '__main__':
     uvicorn.run(
-        'main:app',
+        'src.entrypoint:app',
         host='0.0.0.0',
         port=8000,
     )

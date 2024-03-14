@@ -5,7 +5,7 @@ run: venv
 venv: .venv/touchfile
 
 .venv/touchfile: requirements.txt
-	python -m venv .venv
+	python3 -m venv .venv
 	pip install -r requirements.txt
 	touch .venv/touchfile
 	. .venv/bin/activate

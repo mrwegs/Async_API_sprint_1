@@ -9,8 +9,9 @@ from elasticsearch import AsyncElasticsearch
 
 from src.core import config
 from src.core.logger import LOGGING
-from db import redis
-from db import elastic
+from src.db import redis
+from src.db import elastic
+from src.api.v1.films import router as films_router
 
 
 @asynccontextmanager
@@ -28,6 +29,8 @@ app = FastAPI(
     openapi_url='/api/openapi.json',
     default_response_class=ORJSONResponse,
 )
+
+app.include_router(films_router, prefix='/api/v1/film')
 
 
 @app.get('/')

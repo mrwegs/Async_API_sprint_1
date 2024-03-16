@@ -37,6 +37,10 @@ services:
       - "6379:6379"
     expose:
       - "6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli","ping" ]
+      interval: 3s
+      retries: 3
     depends_on:
       postgres:
         condition: service_healthy
@@ -50,11 +54,11 @@ services:
       elasticsearch:
         condition: service_healthy
   postgres:
-    image: postgres:13.0-alpine
+    build:
+      context: ./postgres
     container_name: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql:ro
     env_file:
       - ./.env
     expose:
@@ -65,6 +69,19 @@ services:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 10s
       timeout: 5s
+  etl:
+    build:
+      context: ./etl
+    container_name: etl_movies
+    env_file:
+      - ./etl/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   postgres_data:

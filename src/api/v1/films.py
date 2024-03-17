@@ -30,7 +30,7 @@ async def search_films(
         params: Params = Depends(),
         film_service: FilmService = Depends(get_film_service)
 ) -> list[FilmResponse]:
-    """Метод для получения списка всех фильмов"""
+    """Метод для поиска фильмов с по названию"""
 
     films = await film_service.get_films_list(params=params, title_query=title_query)
 
@@ -58,7 +58,7 @@ async def get_films(
     params: Params = Depends(),
     film_service: FilmService = Depends(get_film_service)
 ) -> list[FilmResponse]:
-    """Метод для получения списка фильмов определенного жанра"""
+    """Метод для получения списка фильмов с возможностью фильтации по жанру"""
 
     films = await film_service.get_films_list(params=params, genre=genre)
 

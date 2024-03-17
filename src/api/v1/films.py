@@ -41,7 +41,7 @@ async def search_films(
 
 
 @router.get('/{film_id}', response_model=FilmDetails)
-async def film_details(film_id: str, film_service: FilmService = Depends(get_film_service)) -> FilmResponse:
+async def film_details(film_id: str, film_service: FilmService = Depends(get_film_service)) -> FilmDetails:
     """Метод для получения полного описания фильма по идентификатору"""
 
     film = await film_service.get_by_id(film_id)
@@ -54,7 +54,7 @@ async def film_details(film_id: str, film_service: FilmService = Depends(get_fil
 
 @router.get('')
 async def get_films(
-    genre: str = None,
+    genre: str | None = None,
     params: Params = Depends(),
     film_service: FilmService = Depends(get_film_service)
 ) -> list[FilmResponse]:

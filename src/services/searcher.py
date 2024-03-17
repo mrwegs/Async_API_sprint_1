@@ -13,17 +13,17 @@ class ESSearcher:
         self.genre = genre
         self.title_query = title_query
 
-    def _build_match(self) -> dict:
+    def _build_match(self) -> dict | None:
         if self.title_query:
             return {"title": self.title_query}
         return None
 
-    def _build_filter(self) -> dict:
+    def _build_filter(self) -> dict | None:
         if self.genre:
             return {"term": {"genre": self.genre}}
         return None
 
-    def _build_sort(self) -> dict:
+    def _build_sort(self) -> list[dict]:
         t, field = self._sort[0], self._sort[1:]
         if t == '+':
             t = 'asc'
@@ -45,7 +45,7 @@ class ESSearcher:
         return self.base
 
     @property
-    def sort(self) -> list[dict]:
+    def sort(self) -> list[dict] | None:
         if self.genre or not any([self.genre, self.title_query]):
             return self._build_sort()
         return None

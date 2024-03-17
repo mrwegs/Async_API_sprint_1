@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Any, Mapping
 
 from elasticsearch import AsyncElasticsearch, NotFoundError
 from fastapi import Depends
@@ -13,7 +14,9 @@ from src.services.searcher import ESSearcher
 
 
 class FilmService:
-    film_source: list[str] = ['id', 'title', 'description']
+    film_source: Mapping[str, Any] = {
+        'includes': ['id', 'title', 'description']
+    }
 
     def __init__(self, redis: Redis, elastic: AsyncElasticsearch):
         self.redis = redis

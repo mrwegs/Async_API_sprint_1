@@ -7,6 +7,7 @@ def orjson_dumps(v, *, default):
 
 
 class Film(BaseModel):
+    """Класс для краткого описания Кинопроизведения"""
     id: str
     title: str
     description: str
@@ -17,6 +18,7 @@ class Film(BaseModel):
 
 
 class Model(BaseModel):
+    """Базовый класс для описания Персоналий"""
     id: UUID4
     name: str
 
@@ -36,6 +38,7 @@ class Writer(Model):
 
 
 class FilmDetails(BaseModel):
+    """Класс для полного описания Кинопроизведения"""
     id: str
     imdb_rating: float | None
     genre: list[str]

@@ -30,6 +30,7 @@ async def search_films(
         params: Params = Depends(),
         film_service: FilmService = Depends(get_film_service)
 ) -> list[FilmResponse]:
+    """Метод для получения списка всех фильмов"""
 
     films = await film_service.get_films_list(params=params, title_query=title_query)
 
@@ -41,6 +42,7 @@ async def search_films(
 
 @router.get('/{film_id}', response_model=FilmDetails)
 async def film_details(film_id: str, film_service: FilmService = Depends(get_film_service)) -> FilmResponse:
+    """Метод для получения полного описания фильма по идентификатору"""
 
     film = await film_service.get_by_id(film_id)
 
@@ -56,6 +58,7 @@ async def get_films(
     params: Params = Depends(),
     film_service: FilmService = Depends(get_film_service)
 ) -> list[FilmResponse]:
+    """Метод для получения списка фильмов определенного жанра"""
 
     films = await film_service.get_films_list(params=params, genre=genre)
 

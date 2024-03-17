@@ -1,5 +1,4 @@
 from functools import lru_cache
-from typing import Optional
 
 from elasticsearch import AsyncElasticsearch, NotFoundError
 from fastapi import Depends
@@ -7,7 +6,7 @@ from redis.asyncio import Redis
 
 from src.db.elastic import get_elastic
 from src.db.redis import get_redis
-from src.models.film import Film
+from src.models.film import Film, FilmDetails
 from src.core.config import FILM_CACHE_EXPIRE_IN_SECONDS, MOVIES_INDEX
 from src.api.v1.params import Params
 from src.services.searcher import ESSearcher
@@ -20,8 +19,9 @@ class FilmService:
         self.redis = redis
         self.elastic = elastic
 
-    async def get_by_id(self, film_id: str) -> Optional[Film]:
+    async def get_by_id(self, film_id: str) -> FilmDetails | None:
         film = await self._film_from_cache(film_id)
+
         if not film:
             film = await self._get_film_from_elastic(film_id)
             if not film:
@@ -42,12 +42,12 @@ class FilmService:
 
         return films
 
-    async def _get_film_from_elastic(self, film_id: str) -> Optional[Film]:
+    async def _get_film_from_elastic(self, film_id: str) -> FilmDetails | None:
         try:
             doc = await self.elastic.get(index='movies', id=film_id)
         except NotFoundError:
             return None
-        return Film(**doc['_source'])
+        return FilmDetails(**doc['_source'])
 
     async def _get_films_list(self, searcher: ESSearcher) -> list[Film]:
         films: list[Film] = []
@@ -66,15 +66,16 @@ class FilmService:
 
         return films
 
-    async def _film_from_cache(self, film_id: str) -> Optional[Film]:
+    async def _film_from_cache(self, film_id: str) -> FilmDetails | None:
+
         data = await self.redis.get(film_id)
         if not data:
             return None
 
-        film = Film.model_validate_json(data)
+        film = FilmDetails.model_validate_json(data)
         return film
 
-    async def _put_film_to_cache(self, film: Film):
+    async def _put_film_to_cache(self, film: FilmDetails):
         await self.redis.set(film.id, film.model_dump_json(), FILM_CACHE_EXPIRE_IN_SECONDS)
 
     async def _generate_id(

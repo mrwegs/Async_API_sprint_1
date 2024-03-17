@@ -37,13 +37,8 @@ class FilmService:
             title_query: str | None = None
     ) -> list[Film]:
 
-        request_id = await self._generate_id(params, genre, title_query)
-        # films = await self._film_from_cache(request_id)
-        films = None
-
-        if not films:
-            searcher = ESSearcher(params, genre, title_query)
-            films = await self._get_films_list(searcher)
+        searcher = ESSearcher(params, genre, title_query)
+        films = await self._get_films_list(searcher)
 
         return films
 
@@ -88,6 +83,7 @@ class FilmService:
             genre: str | None = None,
             query: str | None = None
     ):
+        """Метод для генерации идентификатора для сохранения данных о фильмах в кеш."""
         return 1
 
 

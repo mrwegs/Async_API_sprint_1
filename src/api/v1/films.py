@@ -10,6 +10,7 @@ from fastapi import (
 from pydantic import BaseModel
 
 from src.services.film import get_film_service, FilmService
+from src.models.film import FilmDetails
 from src.api.v1.params import Params
 
 router = APIRouter(
@@ -38,7 +39,7 @@ async def search_films(
     return [FilmResponse(id=film.id, title=film.title) for film in films]
 
 
-@router.get('/{film_id}', response_model=FilmResponse)
+@router.get('/{film_id}', response_model=FilmDetails)
 async def film_details(film_id: str, film_service: FilmService = Depends(get_film_service)) -> FilmResponse:
 
     film = await film_service.get_by_id(film_id)
@@ -46,7 +47,7 @@ async def film_details(film_id: str, film_service: FilmService = Depends(get_fil
     if not film:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND)
 
-    return FilmResponse(id=film.id, title=film.title)
+    return film
 
 
 @router.get('')

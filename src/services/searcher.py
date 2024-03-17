@@ -15,7 +15,7 @@ class ESSearcher:
 
     def _build_match(self) -> dict:
         if self.title_query:
-            return {"match": {"title": self.title_query}}
+            return {"title": self.title_query}
         return None
 
     def _build_filter(self) -> dict:
@@ -38,7 +38,7 @@ class ESSearcher:
         filter = self._build_filter()
 
         if match:
-            self.base['bool']['must'] = {'match': match}
+            self.base['bool']['must'] = [{'match': match}]
         if filter:
             self.base['bool']['filter'] = {'term': filter}
 

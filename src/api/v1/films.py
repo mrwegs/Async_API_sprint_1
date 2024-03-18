@@ -37,7 +37,7 @@ async def search_films(
     if not films:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND)
 
-    return [FilmResponse(id=film.id, title=film.title) for film in films]
+    return [FilmResponse(id=film.uuid, title=film.title) for film in films]
 
 
 @router.get('/{film_id}', response_model=FilmDetails)
@@ -65,4 +65,4 @@ async def get_films(
     if not films:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND)
 
-    return [FilmResponse(id=film.id, title=film.title) for film in films]
+    return [FilmResponse(id=film.uuid, title=film.title) for film in films]

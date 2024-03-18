@@ -8,7 +8,7 @@ def orjson_dumps(v, *, default):
 
 class Film(BaseModel):
     """Класс для краткого описания Кинопроизведения"""
-    id: str
+    uuid: str
     title: str
     description: str
 
@@ -19,14 +19,14 @@ class Film(BaseModel):
 
 class Model(BaseModel):
     """Базовый класс для описания Персоналий"""
-    id: UUID4
+    uuid: UUID4
     name: str
 
     def __eq__(self, __other: 'Model') -> bool:
-        return self.id == __other.id
+        return self.uuid == __other.uuid
 
     def __hash__(self) -> int:
-        return self.id.int
+        return self.uuid.int
 
 
 class Actor(Model):
@@ -39,7 +39,7 @@ class Writer(Model):
 
 class FilmDetails(BaseModel):
     """Класс для полного описания Кинопроизведения"""
-    id: str
+    uuid: str
     imdb_rating: float | None
     genre: list[str]
     title: str

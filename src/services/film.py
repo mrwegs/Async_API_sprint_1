@@ -79,7 +79,7 @@ class FilmService:
         return film
 
     async def _put_film_to_cache(self, film: FilmDetails):
-        await self.redis.set(film.id, film.model_dump_json(), FILM_CACHE_EXPIRE_IN_SECONDS)
+        await self.redis.set(film.uuid, film.model_dump_json(), FILM_CACHE_EXPIRE_IN_SECONDS)
 
     async def _generate_id(
             self,

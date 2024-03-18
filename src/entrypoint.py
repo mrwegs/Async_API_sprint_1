@@ -30,7 +30,7 @@ app = FastAPI(
     default_response_class=ORJSONResponse,
 )
 
-app.include_router(films_router, prefix='/api/v1/film')
+app.include_router(films_router, prefix='/api/v1/films')
 
 
 @app.get('/')

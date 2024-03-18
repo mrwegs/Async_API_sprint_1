@@ -20,25 +20,25 @@ router = APIRouter(
 
 
 class FilmResponse(BaseModel):
-    id: str
+    uuid: str
     title: str
     imdb_rating: float
 
 
 @router.get('/search')
 async def search_films(
-        title_query: Annotated[str | None, Query(min_length=3)],
+        query: Annotated[str | None, Query(min_length=3)],
         params: Params = Depends(),
         film_service: FilmService = Depends(get_film_service)
 ) -> list[FilmResponse]:
     """Метод для поиска фильмов с по названию"""
 
-    films = await film_service.get_films_list(params=params, title_query=title_query)
+    films = await film_service.get_films_list(params=params, title_query=query)
 
     if not films:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND)
 
-    return [FilmResponse(id=film.uuid, title=film.title, imdb_rating=film.imdb_rating) for film in films]
+    return [FilmResponse(uuid=film.uuid, title=film.title, imdb_rating=film.imdb_rating) for film in films]
 
 
 @router.get('/{film_id}', response_model=FilmDetails)
@@ -66,4 +66,4 @@ async def get_films(
     if not films:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND)
 
-    return [FilmResponse(id=film.uuid, title=film.title, imdb_rating=film.imdb_rating) for film in films]
+    return [FilmResponse(uuid=film.uuid, title=film.title, imdb_rating=film.imdb_rating) for film in films]

@@ -22,3 +22,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Время хранения данных о фильме в Redis
 FILM_CACHE_EXPIRE_IN_SECONDS = 60 * 5  # 5 минут
+
+# Максимальный размер страницы
+MAX_PAGE_SIZE = 100
+
+# Имена индексов ES
+MOVIES_INDEX = 'movies'
+GENRES_INDEX = 'genres'
+PERSONS_INDEX = 'persons'

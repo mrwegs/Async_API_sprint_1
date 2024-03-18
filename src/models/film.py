@@ -9,8 +9,9 @@ def orjson_dumps(v, *, default):
 class Film(BaseModel):
     """Класс для краткого описания Кинопроизведения"""
     uuid: str
-    title: str
-    description: str
+    title: str | None
+    description: str | None
+    imdb_rating: float
 
     class Config:
         json_loads = orjson.loads

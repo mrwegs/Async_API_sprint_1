@@ -20,7 +20,7 @@ class ESSearcher:
 
     def _build_filter(self) -> dict | None:
         if self.genre:
-            return {"term": {"genre": self.genre}}
+            return {"genre": self.genre}
         return None
 
     def _build_sort(self) -> list[dict]:

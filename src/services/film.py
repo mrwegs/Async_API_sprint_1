@@ -15,7 +15,7 @@ from src.services.searcher import ESSearcher
 
 class FilmService:
     film_source: Mapping[str, Any] = {
-        'includes': ['id', 'title', 'description']
+        'includes': ['uuid', 'title', 'description', 'imdb_rating']
     }
 
     def __init__(self, redis: Redis, elastic: AsyncElasticsearch):

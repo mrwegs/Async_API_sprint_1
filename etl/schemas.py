@@ -5,9 +5,10 @@ from pydantic import BaseModel, Field, ConfigDict, field_validator
 
 
 class PersonES(BaseModel):
-    id: str
+    id: str = Field(alias='uuid')
     name: str
 
+    model_config = ConfigDict(populate_by_name=True)
 
 class MoviesDTO(BaseModel):
     id: str = Field(alias='uuid')

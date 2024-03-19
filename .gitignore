@@ -163,4 +163,5 @@ cython_debug/
 .idea/
 
 .env
+.env.bkp
 .vscode

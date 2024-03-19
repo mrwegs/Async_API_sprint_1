@@ -1,23 +1,19 @@
 from functools import lru_cache
-from typing import Any, Mapping
+from typing import Unpack
 
 from elasticsearch import AsyncElasticsearch, NotFoundError
 from fastapi import Depends
 from redis.asyncio import Redis
 
+from src.services.query_builder import ESQueryBuilder, QueryRequest
 from src.db.elastic import get_elastic
 from src.db.redis import get_redis
 from src.models.film import Film, FilmDetails
 from src.core.config import FILM_CACHE_EXPIRE_IN_SECONDS, MOVIES_INDEX
-from src.api.v1.params import Params
-from src.services.searcher import ESSearcher
+from src.api.v1.params import FilterParams
 
 
 class FilmService:
-    film_source: Mapping[str, Any] = {
-        'includes': ['uuid', 'title', 'description', 'imdb_rating']
-    }
-
     def __init__(self, redis: Redis, elastic: AsyncElasticsearch):
         self.redis = redis
         self.elastic = elastic
@@ -35,12 +31,12 @@ class FilmService:
 
     async def get_films_list(
             self,
-            params: Params,
-            genre: str | None = None,
-            title_query: str | None = None
+            params: FilterParams,
+            **query_request: Unpack[QueryRequest]
     ) -> list[Film]:
 
-        searcher = ESSearcher(params, genre, title_query)
+        # searcher = ESSearcher(params, genre, title_query)
+        searcher = ESQueryBuilder(params, query_request)
         films = await self._get_films_list(searcher)
 
         return films
@@ -52,7 +48,7 @@ class FilmService:
             return None
         return FilmDetails(**doc['_source'])
 
-    async def _get_films_list(self, searcher: ESSearcher) -> list[Film]:
+    async def _get_films_list(self, searcher: ESQueryBuilder) -> list[Film]:
         films: list[Film] = []
 
         response = await self.elastic.search(
@@ -61,7 +57,7 @@ class FilmService:
             size=searcher.page_size,
             query=searcher.query,
             sort=searcher.sort,
-            source=self.film_source,
+            source=searcher._film_source,
         )
 
         for film in response['hits']['hits']:
@@ -83,7 +79,7 @@ class FilmService:
 
     async def _generate_id(
             self,
-            params: Params,
+            params: FilterParams,
             genre: str | None = None,
             query: str | None = None
     ):

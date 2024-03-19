@@ -14,5 +14,9 @@ class PageParams(BaseModel):
     page_number: Annotated[int, Query(gt=0)] = 1
 
 
-class Params(PageParams):
+class FilterParams(PageParams):
     sort: SortType = SortType.IMDB_DESC
+
+
+class SearchParams(FilterParams):
+    sort: SortType = SortType._SCORE_DESC

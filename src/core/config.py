@@ -12,6 +12,7 @@ PROJECT_NAME = os.getenv('PROJECT_NAME', 'movies')
 # Настройки Redis
 REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
 REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
+REDIS_ASYNC_API_DB: int = int(os.getenv('REDIS_ASYNC_API_DB', 2))
 
 # Настройки Elasticsearch
 ELASTIC_HOST = os.getenv('ELASTIC_HOST', '127.0.0.1')

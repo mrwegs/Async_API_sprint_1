@@ -4,7 +4,6 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from src.api.v1.films import FilmResponse
-from src.services.film import FilmService, get_film_service
 from src.services.enumtypes import PersonFields, QueryContext
 from src.services.person import PersonService, get_person_service
 from src.api.v1.params import FilterParams, SearchParams

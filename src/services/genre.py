@@ -14,12 +14,27 @@ class GenreService:
         self.redis = redis
         self.elastic = elastic
 
+    async def get_genre_by_id(self, genre_id: str) -> Genre | None:
+        genre = await self._get_genre_by_id(genre_id)
+        return genre
+
     async def get_genres_list(self) -> list[Genre] | None:
         genres = await self._get_genres_list()
         if not genres:
             return None
 
         return genres
+
+    async def _get_genre_by_id(self, genre_id: str) -> Genre | None:
+        response = await self.elastic.get(
+            index=GENRES_INDEX,
+            id=genre_id
+        )
+
+        if not response:
+            return None
+
+        return Genre(**response['_source'])
 
     async def _get_genres_list(self) -> list[Genre]:
         genres_list = []

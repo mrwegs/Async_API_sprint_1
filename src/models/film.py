@@ -15,6 +15,12 @@ class Film(BaseModel):
         json_dumps = orjson_dumps
 
 
+class FilmResponse(BaseModel):
+    uuid: str
+    title: str | None
+    imdb_rating: float
+
+
 class Model(BaseModel):
     """Базовый класс для описания Персоналий"""
     uuid: UUID4

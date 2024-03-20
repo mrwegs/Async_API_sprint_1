@@ -15,5 +15,12 @@ class QueryContext(Enum):
 
 
 class TableFields(str, Enum):
+    ...
+
+class FilmworkFields(TableFields):
     TITLE = 'title'
     GENRE = 'genre'
+
+class PersonFields(TableFields):
+    FULL_NAME = 'full_name'
+

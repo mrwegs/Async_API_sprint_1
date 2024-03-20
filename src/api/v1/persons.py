@@ -47,7 +47,7 @@ async def person_details(
     return person
 
 
-@router.get('/{uuid}/film')
+@router.get('/{person_id}/film')
 async def get_films_by_person(
     person_id: str,
     params: FilterParams = Depends(),

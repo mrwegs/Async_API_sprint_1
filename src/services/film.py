@@ -59,7 +59,7 @@ class FilmService:
             sort=searcher.sort,
             source=searcher._film_source,
         )
-        self.elastic.g
+
         for film in response['hits']['hits']:
             films.append(Film(**film['_source']))
 

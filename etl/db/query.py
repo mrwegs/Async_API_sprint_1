@@ -31,11 +31,13 @@ def get_persons_query(modified: str):
             person_with_films.person_id, 
             person_with_films.full_name,
             ARRAY_AGG(distinct
-                jsonb_build_object('uuid', person_with_films.film_id, 'roles', roles)) AS films,
+                jsonb_build_object('uuid', person_with_films.film_id, 'roles', roles, 'title', person_with_films.film_title, 'imdb_rating', person_with_films.film_rating)) AS films,
             person_with_films.modified
     FROM (
             SELECT 
                 film.id as film_id,
+                film.title as film_title,
+                film.rating as film_rating,
                 person.id as person_id, 
                 person.full_name as full_name,
                 ARRAY_AGG(DISTINCT (person_film.role)) AS roles,

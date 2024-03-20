@@ -33,6 +33,8 @@ class MoviesDTO(BaseModel):
 
 class FilmES(BaseModel):
     uuid: str
+    title: str
+    imdb_rating: float
     roles: list[str]
 
 

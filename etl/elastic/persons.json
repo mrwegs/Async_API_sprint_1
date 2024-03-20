@@ -54,6 +54,18 @@
           "uuid": {
             "type": "keyword"
           },
+          "title": {
+            "type": "text",
+            "analyzer": "ru_en",
+            "fields": {
+              "raw": {
+                "type": "keyword"
+              }
+            }
+          },
+          "imdb_rating": {
+            "type": "float"
+          },
           "roles": {
             "type": "text",
             "analyzer": "ru_en"

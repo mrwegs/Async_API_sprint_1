@@ -9,9 +9,9 @@ from fastapi import (
 )
 from pydantic import BaseModel
 
-from src.services.enumtypes import QueryContext, TableFields
+from src.services.enumtypes import FilmworkFields, QueryContext, PersonFields
 from src.services.film import get_film_service, FilmService
-from src.models.film import FilmDetails
+from src.models.film import FilmDetails, FilmResponse
 from src.api.v1.params import FilterParams, SearchParams
 
 router = APIRouter(
@@ -19,11 +19,6 @@ router = APIRouter(
     responses={HTTPStatus.NOT_FOUND: {'description': 'Not found'}},
 )
 
-
-class FilmResponse(BaseModel):
-    uuid: str
-    title: str | None
-    imdb_rating: float
 
 
 @router.get('/search')
@@ -37,7 +32,7 @@ async def search_films_by_title(
     films = await film_service.get_films_list(
         params=params,
         context=QueryContext.MATCH,
-        fields=[TableFields.TITLE],
+        fields=[FilmworkFields.TITLE],
         value=title
     )
 
@@ -73,7 +68,7 @@ async def get_films(
     films = await film_service.get_films_list(
         params=params,
         context=QueryContext.FILTER,
-        fields=[TableFields.GENRE],
+        fields=[FilmworkFields.GENRE],
         value=genre
     )
 

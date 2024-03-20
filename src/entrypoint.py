@@ -12,6 +12,8 @@ from src.core.logger import LOGGING
 from src.db import redis
 from src.db import elastic
 from src.api.v1.films import router as films_router
+from src.api.v1.genres import router as genres_router
+from src.api.v1.persons import router as persons_router
 
 
 @asynccontextmanager
@@ -31,6 +33,8 @@ app = FastAPI(
 )
 
 app.include_router(films_router, prefix='/api/v1/films')
+app.include_router(genres_router, prefix='/api/v1/genres')
+app.include_router(persons_router, prefix='/api/v1/persons')
 
 
 @app.get('/')

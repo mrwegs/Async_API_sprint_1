@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Any, Mapping, TypedDict
 
 from src.api.v1.params import FilterParams
@@ -30,6 +31,7 @@ class ESQueryBuilder:
         self._context = request['context']
         self._fields = request['fields']
         self._value = request['value']
+        self._query_base = deepcopy(self._query_base)
 
     def _build_match(self) -> None:
         match_list = []

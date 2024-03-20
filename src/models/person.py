@@ -7,6 +7,8 @@ class PersonsFilms(BaseModel):
     """Класс для описани фильмов с участием конкретной персоны"""
     uuid: str
     roles: list[str]
+    title: str = ''
+    imdb_rating: float = 0.0
 
     class Config:
         json_loads = orjson.loads

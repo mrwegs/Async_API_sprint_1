@@ -23,6 +23,7 @@ from src.api.v1.persons import router as persons_router
 async def lifespan(app: FastAPI):
     redis.redis = aioredis.Redis(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_ASYNC_API_DB)
     elastic.es = AsyncElasticsearch(hosts=[f'http://{config.ELASTIC_HOST}:{config.ELASTIC_PORT}'])
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     yield
     await redis.redis.close()
     await elastic.es.close()
@@ -45,10 +46,10 @@ def index():
     return {'hello': 'world'}
 
 
-@app.on_event("startup")
-async def startup_event():
-    redis = aioredis.from_url(f"redis://{os.getenv('REDIS_HOST')}", encoding="utf8", decode_responses=True)
-    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+# @app.on_event("startup")
+# async def startup_event():
+#     redis = aioredis.from_url(f"redis://{os.getenv('REDIS_HOST')}", encoding="utf8", decode_responses=True)
+#     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
 
 if __name__ == '__main__':

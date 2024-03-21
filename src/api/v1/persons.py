@@ -6,6 +6,7 @@ from fastapi_cache.decorator import cache
 
 from src.api.v1.films import FilmResponse
 from src.api.v1.params import FilterParams, SearchParams
+from src.core import config
 from src.models.person import PersonResponse, PersonsFilmsResponse
 from src.services.enumtypes import PersonFields, QueryContext
 from src.services.person import PersonService, get_person_service
@@ -16,7 +17,7 @@ router = APIRouter(
 )
 
 @router.get('/search')
-@cache(expire=30)
+@cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def search_persons(
     name: Annotated[str, Query(min_length=3)],
     params: SearchParams = Depends(),
@@ -48,7 +49,7 @@ async def search_persons(
 
 
 @router.get('/{person_id}')
-@cache(expire=30)
+@cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def person_details(
     person_id: str,
     person_service: PersonService = Depends(get_person_service)
@@ -72,7 +73,7 @@ async def person_details(
 
 
 @router.get('/{person_id}/film')
-@cache(expire=30)
+@cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def get_films_by_person(
     person_id: str,
     params: FilterParams = Depends(),

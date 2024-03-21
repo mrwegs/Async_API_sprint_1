@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_cache.decorator import cache
 
 from src.api.v1.params import FilterParams, SearchParams
+from src.core import config
 from src.models.film import FilmDetails, FilmResponse
 from src.services.enumtypes import FilmworkFields, QueryContext
 from src.services.film import FilmService, get_film_service
@@ -17,7 +18,7 @@ router = APIRouter(
 
 
 @router.get('/search')
-@cache(expire=30)
+@cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def search_films_by_title(
         title: Annotated[str, Query(min_length=3)],
         params: SearchParams = Depends(),
@@ -39,7 +40,7 @@ async def search_films_by_title(
 
 
 @router.get('/{film_id}', response_model=FilmDetails)
-@cache(expire=30)
+@cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def film_details(
         film_id: str,
         film_service: FilmService = Depends(get_film_service)
@@ -55,7 +56,7 @@ async def film_details(
 
 
 @router.get('')
-@cache(expire=30)
+@cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def get_films(
     genre: str | None = None,
     params: FilterParams = Depends(),

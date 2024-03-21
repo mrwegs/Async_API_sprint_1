@@ -47,7 +47,7 @@ class ElasticLoader(ConnMixin):
             if not self.connection.indices.exists(index=index):
                 with open(f'elastic/{index}.json', encoding='utf-8') as f:
                     settings_index = json.load(f)
-                self.connection.indices.create(index=index, body=settings_index)
+                self.connection.indices.create(index=index, body=settings_index, request_timeout=70)
 
     @backoff.on_exception(backoff.expo, ConnectionError, max_tries=15)
     def load_to_es(self, data: list[tuple[dict[str, Any], str]], index_name: str):

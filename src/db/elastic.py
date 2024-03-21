@@ -1,8 +1,9 @@
 from typing import Optional
 from elasticsearch import AsyncElasticsearch
 
+import os
 
-es: Optional[AsyncElasticsearch] = None
+es: Optional[AsyncElasticsearch] = AsyncElasticsearch(os.getenv('ES_URL'))
 
 
 # Функция понадобится при внедрении зависимостей

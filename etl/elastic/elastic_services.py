@@ -1,13 +1,12 @@
 import json
-from typing import Type, Any
+from typing import Any, Type
 
 import backoff
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.helpers import bulk
-from pydantic import BaseModel
-
 from mixin import ConnMixin
+from pydantic import BaseModel
 from redis_state.redis_services import RedisStorage
 from settings import SettingsES
 

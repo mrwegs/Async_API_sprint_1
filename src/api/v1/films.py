@@ -1,19 +1,13 @@
 from http import HTTPStatus
 from typing import Annotated
 
-from fastapi import (
-    APIRouter,
-    HTTPException,
-    Depends,
-    Query,
-)
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_cache.decorator import cache
 
-from src.services.enumtypes import FilmworkFields, QueryContext, PersonFields
-from src.services.film import get_film_service, FilmService
-from src.models.film import FilmDetails, FilmResponse
 from src.api.v1.params import FilterParams, SearchParams
+from src.models.film import FilmDetails, FilmResponse
+from src.services.enumtypes import FilmworkFields, QueryContext
+from src.services.film import FilmService, get_film_service
 
 router = APIRouter(
     tags=['films'],

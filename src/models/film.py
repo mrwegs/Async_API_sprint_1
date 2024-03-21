@@ -3,6 +3,7 @@ from pydantic import UUID4, BaseModel
 
 from src.models.dumps import orjson_dumps
 
+
 class Film(BaseModel):
     """Класс для краткого описания Кинопроизведения"""
     uuid: str

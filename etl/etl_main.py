@@ -1,12 +1,13 @@
 import logging
 import time
 
-from db.postgres_services import PostgresExtractor
-from db.query import get_filmwork_query, get_persons_query, get_genres_query
 from elastic.elastic_services import DataTransform, ElasticLoader
 from redis_state.redis_services import RedisStorage
-from schemas import MoviesDTO, PersonsDTO, GenresDTO
+from schemas import GenresDTO, MoviesDTO, PersonsDTO
 from settings import settings_db, settings_es, settings_redis
+
+from db.postgres_services import PostgresExtractor
+from db.query import get_filmwork_query, get_genres_query, get_persons_query
 
 logging.basicConfig(level=logging.INFO)
 

@@ -2,8 +2,8 @@ from abc import ABC, abstractproperty
 from copy import deepcopy
 from typing import Any, Mapping, TypedDict
 
-from src.core.config import GENRES_INDEX, MOVIES_INDEX, PERSONS_INDEX
 from src.api.v1.params import FilterParams
+from src.core.config import GENRES_INDEX, MOVIES_INDEX, PERSONS_INDEX
 from src.services.enumtypes import QueryContext, TableFields
 
 

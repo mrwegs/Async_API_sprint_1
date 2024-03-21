@@ -5,11 +5,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_cache.decorator import cache
 
 from src.api.v1.films import FilmResponse
-from src.services.enumtypes import PersonFields, QueryContext
-from src.services.person import PersonService, get_person_service
 from src.api.v1.params import FilterParams, SearchParams
 from src.models.person import PersonResponse, PersonsFilmsResponse
-
+from src.services.enumtypes import PersonFields, QueryContext
+from src.services.person import PersonService, get_person_service
 
 router = APIRouter(
     tags=['persons'],

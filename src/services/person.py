@@ -1,16 +1,18 @@
 from functools import lru_cache
 from typing import Unpack
+
+from elasticsearch import AsyncElasticsearch, NotFoundError
 from fastapi import Depends
 from redis.asyncio import Redis
-from elasticsearch import AsyncElasticsearch, NotFoundError
 
-from src.models.film import FilmResponse
 from src.api.v1.params import FilterParams
-from src.services.query_builder import ESQueryBuilder, PersonQueryBuilder, QueryRequest
 from src.core.config import PERSONS_INDEX
 from src.db.elastic import get_elastic
 from src.db.redis import get_redis
+from src.models.film import FilmResponse
 from src.models.person import Person
+from src.services.query_builder import (ESQueryBuilder, PersonQueryBuilder,
+                                        QueryRequest)
 
 
 class PersonService:

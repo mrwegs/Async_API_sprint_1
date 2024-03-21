@@ -1,8 +1,6 @@
 from typing import Annotated
 
-from fastapi import (
-    Query
-)
+from fastapi import Query
 from pydantic import BaseModel
 
 from src.core.config import MAX_PAGE_SIZE

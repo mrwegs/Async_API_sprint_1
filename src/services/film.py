@@ -5,12 +5,13 @@ from elasticsearch import AsyncElasticsearch, NotFoundError
 from fastapi import Depends
 from redis.asyncio import Redis
 
-from src.services.query_builder import ESQueryBuilder, FilmQueryBuilder, QueryRequest
+from src.api.v1.params import FilterParams
+from src.core.config import FILM_CACHE_EXPIRE_IN_SECONDS, MOVIES_INDEX
 from src.db.elastic import get_elastic
 from src.db.redis import get_redis
 from src.models.film import Film, FilmDetails
-from src.core.config import FILM_CACHE_EXPIRE_IN_SECONDS, MOVIES_INDEX
-from src.api.v1.params import FilterParams
+from src.services.query_builder import (ESQueryBuilder, FilmQueryBuilder,
+                                        QueryRequest)
 
 
 class FilmService:

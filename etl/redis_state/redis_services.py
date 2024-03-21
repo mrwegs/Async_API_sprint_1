@@ -1,10 +1,9 @@
 import datetime
 
 import backoff
+from mixin import ConnMixin
 from redis import Redis
 from redis.exceptions import ConnectionError
-
-from mixin import ConnMixin
 
 
 class RedisStorage(ConnMixin):

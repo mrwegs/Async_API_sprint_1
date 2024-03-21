@@ -1,8 +1,7 @@
 import backoff
 import psycopg2
-from psycopg2.extras import DictCursor
-
 from mixin import ConnMixin
+from psycopg2.extras import DictCursor
 
 
 class PostgresExtractor(ConnMixin):

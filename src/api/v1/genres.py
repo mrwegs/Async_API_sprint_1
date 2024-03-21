@@ -3,9 +3,8 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi_cache.decorator import cache
 
-from src.services.genre import GenreService, get_genre_service
 from src.models.genre import Genre
-
+from src.services.genre import GenreService, get_genre_service
 
 router = APIRouter(
     tags=['genres'],

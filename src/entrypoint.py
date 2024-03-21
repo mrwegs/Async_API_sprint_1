@@ -1,22 +1,21 @@
-from contextlib import asynccontextmanager
 import logging
 import os
+from contextlib import asynccontextmanager
 
 import uvicorn
+from elasticsearch import AsyncElasticsearch
 from fastapi import FastAPI
+from fastapi.responses import ORJSONResponse
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from fastapi.responses import ORJSONResponse
 from redis import asyncio as aioredis
-from elasticsearch import AsyncElasticsearch
 
-from src.core import config
-from src.core.logger import LOGGING
-from src.db import redis
-from src.db import elastic
 from src.api.v1.films import router as films_router
 from src.api.v1.genres import router as genres_router
 from src.api.v1.persons import router as persons_router
+from src.core import config
+from src.core.logger import LOGGING
+from src.db import elastic, redis
 
 
 @asynccontextmanager

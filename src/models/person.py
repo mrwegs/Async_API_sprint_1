@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 from src.models.dumps import orjson_dumps
 
+
 class PersonsFilms(BaseModel):
     """Класс для описани фильмов с участием конкретной персоны"""
     uuid: str

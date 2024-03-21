@@ -1,7 +1,7 @@
-from typing import Optional
-from elasticsearch import AsyncElasticsearch
-
 import os
+from typing import Optional
+
+from elasticsearch import AsyncElasticsearch
 
 es: Optional[AsyncElasticsearch] = AsyncElasticsearch(os.getenv('ES_URL'))
 

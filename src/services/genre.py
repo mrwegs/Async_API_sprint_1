@@ -1,11 +1,12 @@
 from functools import lru_cache
+
+from elasticsearch import AsyncElasticsearch
 from fastapi import Depends
 from redis.asyncio import Redis
-from elasticsearch import AsyncElasticsearch
 
+from src.core.config import GENRES_INDEX
 from src.db.elastic import get_elastic
 from src.db.redis import get_redis
-from src.core.config import GENRES_INDEX
 from src.models.genre import Genre
 
 

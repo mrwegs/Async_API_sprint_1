@@ -14,6 +14,16 @@ class QueryRequest(TypedDict):
 
 
 class ESQueryBuilder(ABC):
+    """
+        A base abctract class for building queries for index in Elasticsearch.
+
+        Parameters
+        ----------
+        params : FilterParams
+            The filter parameters from the request.
+        request : QueryRequest
+            The query request containing the context, fields, and value."""
+
     _type_mapping = {'+': 'asc', '-': 'desc'}
 
     def __init__(

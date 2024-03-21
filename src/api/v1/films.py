@@ -23,7 +23,7 @@ async def search_films_by_title(
         params: SearchParams = Depends(),
         film_service: FilmService = Depends(get_film_service),
 ) -> list[FilmResponse]:
-    """Метод для поиска фильмов с по названию"""
+    """Метод для поиска фильмов по названию"""
 
     films = await film_service.get_films_list(
         params=params,

@@ -11,6 +11,13 @@ from src.models.genre import Genre
 
 
 class GenreService:
+    """
+        The GenreService class provides an interface for retrieving genre data from ElasticSearch.
+
+        Args:
+            redis (Redis): The Redis client used for caching data.
+            elastic (AsyncElasticsearch): The Elasticsearch client used for storing and retrieving data.
+        """
     def __init__(self, redis: Redis, elastic: AsyncElasticsearch):
         self.redis = redis
         self.elastic = elastic

@@ -16,6 +16,13 @@ from src.services.query_builder import (ESQueryBuilder, PersonQueryBuilder,
 
 
 class PersonService:
+    """
+        The PersonService class provides an interface for retrieving person data from ElasticSearch.
+
+        Args:
+            redis (Redis): A Redis client for caching data.
+            elastic (AsyncElasticsearch): An Elasticsearch client for querying data.
+        """
     def __init__(self, redis: Redis, elastic: AsyncElasticsearch):
         self.redis = redis
         self.elastic = elastic

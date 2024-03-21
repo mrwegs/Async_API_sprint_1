@@ -16,6 +16,7 @@ router = APIRouter(
 async def get_genres(
     genre_service: GenreService = Depends(get_genre_service)
 ) -> list[Genre]:
+    """Метод для получения списка жанров"""
 
     genres = await genre_service.get_genres_list()
 
@@ -30,6 +31,8 @@ async def genre_details(
     genre_id: str,
     genre_service: GenreService = Depends(get_genre_service)
 ) -> Genre:
+    """Метод для получения полного описания жанра по идентификатору"""
+
     genre = await genre_service.get_genre_by_id(genre_id)
 
     if not genre:

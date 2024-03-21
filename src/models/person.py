@@ -16,7 +16,8 @@ class PersonsFilms(BaseModel):
         json_dumps = orjson_dumps
 
 class PersonsFilmsResponse(BaseModel):
-    """Класс для описани фильмов с участием конкретной персоны"""
+    """Класс для описани фильмов с участием конкретной персоны,
+    отправляемый в ответе пользователю"""
     uuid: str
     roles: list[str]
 
@@ -35,7 +36,7 @@ class Person(BaseModel):
         json_dumps = orjson_dumps
 
 class PersonResponse(BaseModel):
-    """Класс для описания персоналий"""
+    """Класс для описания персоналий, отправляемый в ответе пользователю"""
     uuid: str
     full_name: str
     films: list[PersonsFilmsResponse]

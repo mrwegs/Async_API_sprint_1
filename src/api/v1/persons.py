@@ -23,6 +23,8 @@ async def search_persons(
     person_service: PersonService = Depends(get_person_service)
 ) -> list[PersonResponse]:
 
+    """Метод для поиска персоналий по имени"""
+
     persons = await person_service.get_persons_list(
         params=params,
         context=QueryContext.MATCH,
@@ -52,6 +54,8 @@ async def person_details(
     person_service: PersonService = Depends(get_person_service)
 ) -> PersonResponse:
 
+    """Метод для получения полного описания персоналии по идентификатору"""
+
     person = await person_service.get_person_by_id(person_id)
 
     if not person:
@@ -74,6 +78,8 @@ async def get_films_by_person(
     params: FilterParams = Depends(),
     person_service: PersonService = Depends(get_person_service)
 ) -> list[FilmResponse]:
+
+    """Метод для получения списка фильмов с участием персоналии по идентификатору"""
 
     films = await person_service.get_persons_films(
         person_id=person_id

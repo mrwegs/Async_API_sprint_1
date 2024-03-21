@@ -17,6 +17,7 @@ class Film(BaseModel):
 
 
 class FilmResponse(BaseModel):
+    """Класс для описания фильма, передаваемого в ответе пользователю"""
     uuid: str
     title: str | None
     imdb_rating: float

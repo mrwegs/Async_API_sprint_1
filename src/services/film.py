@@ -5,7 +5,7 @@ from elasticsearch import AsyncElasticsearch, NotFoundError
 from fastapi import Depends
 from redis.asyncio import Redis
 
-from src.services.query_builder import ESQueryBuilder, QueryRequest
+from src.services.query_builder import ESQueryBuilder, FilmQueryBuilder, QueryRequest
 from src.db.elastic import get_elastic
 from src.db.redis import get_redis
 from src.models.film import Film, FilmDetails
@@ -36,7 +36,7 @@ class FilmService:
     ) -> list[Film]:
 
         # searcher = ESSearcher(params, genre, title_query)
-        searcher = ESQueryBuilder(params, query_request)
+        searcher = FilmQueryBuilder(params, query_request)
         films = await self._get_films_list(searcher)
 
         return films
@@ -57,7 +57,7 @@ class FilmService:
             size=searcher.page_size,
             query=searcher.query,
             sort=searcher.sort,
-            source=searcher._film_source,
+            source=searcher.source
         )
 
         for film in response['hits']['hits']:

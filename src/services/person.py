@@ -6,7 +6,7 @@ from elasticsearch import AsyncElasticsearch, NotFoundError
 
 from src.models.film import FilmResponse
 from src.api.v1.params import FilterParams
-from src.services.query_builder import ESQueryBuilder, QueryRequest
+from src.services.query_builder import ESQueryBuilder, PersonQueryBuilder, QueryRequest
 from src.core.config import PERSONS_INDEX
 from src.db.elastic import get_elastic
 from src.db.redis import get_redis
@@ -28,7 +28,7 @@ class PersonService:
             params: FilterParams,
             **query_request: Unpack[QueryRequest]
     ) -> list[Person]:
-        searcher = ESQueryBuilder(params, query_request)
+        searcher = PersonQueryBuilder(params, query_request)
         persons = await self._get_persons_from_elastic(searcher)
 
         return persons
@@ -53,11 +53,11 @@ class PersonService:
 
         return Person(**person['_source'])
 
-    async def _get_persons_from_elastic(self, searcher) -> list[Person]:
+    async def _get_persons_from_elastic(self, searcher: ESQueryBuilder) -> list[Person]:
         films = []
 
         response = await self.elastic.search(
-            index=PERSONS_INDEX,
+            index=searcher.index,
             from_=searcher.from_,
             size=searcher.page_size,
             query=searcher.query,

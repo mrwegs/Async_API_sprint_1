@@ -22,6 +22,7 @@ class FilmService:
             redis (Redis): A Redis client for caching film data.
             elastic (AsyncElasticsearch): An Elasticsearch client for searching film data.
         """
+
     def __init__(self, redis: Redis, elastic: AsyncElasticsearch):
         self.redis = redis
         self.elastic = elastic

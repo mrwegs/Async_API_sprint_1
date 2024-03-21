@@ -16,7 +16,6 @@ router = APIRouter(
 )
 
 
-
 @router.get('/search')
 @cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def search_films_by_title(
@@ -44,7 +43,7 @@ async def search_films_by_title(
 async def film_details(
         film_id: str,
         film_service: FilmService = Depends(get_film_service)
-    ) -> FilmDetails:
+) -> FilmDetails:
     """Метод для получения полного описания фильма по идентификатору"""
 
     film = await film_service.get_by_id(film_id)
@@ -58,9 +57,9 @@ async def film_details(
 @router.get('')
 @cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def get_films(
-    genre: str | None = None,
-    params: FilterParams = Depends(),
-    film_service: FilmService = Depends(get_film_service)
+        genre: str | None = None,
+        params: FilterParams = Depends(),
+        film_service: FilmService = Depends(get_film_service)
 ) -> list[FilmResponse]:
     """Метод для получения списка фильмов с возможностью фильтации по жанру"""
 

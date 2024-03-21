@@ -15,6 +15,7 @@ class PersonsFilms(BaseModel):
         json_loads = orjson.loads
         json_dumps = orjson_dumps
 
+
 class PersonsFilmsResponse(BaseModel):
     """Класс для описани фильмов с участием конкретной персоны,
     отправляемый в ответе пользователю"""
@@ -25,6 +26,7 @@ class PersonsFilmsResponse(BaseModel):
         json_loads = orjson.loads
         json_dumps = orjson_dumps
 
+
 class Person(BaseModel):
     """Класс для описания персоналий"""
     uuid: str
@@ -34,6 +36,7 @@ class Person(BaseModel):
     class Config:
         json_loads = orjson.loads
         json_dumps = orjson_dumps
+
 
 class PersonResponse(BaseModel):
     """Класс для описания персоналий, отправляемый в ответе пользователю"""

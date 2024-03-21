@@ -1,4 +1,3 @@
-
 from enum import Enum
 
 
@@ -20,12 +19,13 @@ class TableFields(str, Enum):
     """Класс для описания полей индексов ElasticSearch"""
     ...
 
+
 class FilmworkFields(TableFields):
     """Класс для описания полей индекса фильмов ElasticSearch"""
     TITLE = 'title'
     GENRE = 'genre'
 
+
 class PersonFields(TableFields):
     """Класс для описания полей индекса персоналий ElasticSearch"""
     FULL_NAME = 'full_name'
-

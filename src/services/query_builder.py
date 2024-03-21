@@ -56,7 +56,6 @@ class ESQueryBuilder(ABC):
 
         self._query_base['bool']['filter'] = filter_list
 
-
     @property
     def query(self) -> dict:
         if self._value is None:

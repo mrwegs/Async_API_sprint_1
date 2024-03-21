@@ -16,14 +16,14 @@ router = APIRouter(
     responses={HTTPStatus.NOT_FOUND: {'description': 'Not found'}},
 )
 
+
 @router.get('/search')
 @cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def search_persons(
-    name: Annotated[str, Query(min_length=3)],
-    params: SearchParams = Depends(),
-    person_service: PersonService = Depends(get_person_service)
+        name: Annotated[str, Query(min_length=3)],
+        params: SearchParams = Depends(),
+        person_service: PersonService = Depends(get_person_service)
 ) -> list[PersonResponse]:
-
     """Метод для поиска персоналий по имени"""
 
     persons = await person_service.get_persons_list(
@@ -51,10 +51,9 @@ async def search_persons(
 @router.get('/{person_id}')
 @cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def person_details(
-    person_id: str,
-    person_service: PersonService = Depends(get_person_service)
+        person_id: str,
+        person_service: PersonService = Depends(get_person_service)
 ) -> PersonResponse:
-
     """Метод для получения полного описания персоналии по идентификатору"""
 
     person = await person_service.get_person_by_id(person_id)
@@ -63,23 +62,22 @@ async def person_details(
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND)
 
     return PersonResponse(
-            uuid=person.uuid,
-            full_name=person.full_name,
-            films=[
-                PersonsFilmsResponse(uuid=film.uuid, roles=film.roles)
-                for film in person.films
-            ],
-        )
+        uuid=person.uuid,
+        full_name=person.full_name,
+        films=[
+            PersonsFilmsResponse(uuid=film.uuid, roles=film.roles)
+            for film in person.films
+        ],
+    )
 
 
 @router.get('/{person_id}/film')
 @cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def get_films_by_person(
-    person_id: str,
-    params: FilterParams = Depends(),
-    person_service: PersonService = Depends(get_person_service)
+        person_id: str,
+        params: FilterParams = Depends(),
+        person_service: PersonService = Depends(get_person_service)
 ) -> list[FilmResponse]:
-
     """Метод для получения списка фильмов с участием персоналии по идентификатору"""
 
     films = await person_service.get_persons_films(

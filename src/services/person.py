@@ -23,6 +23,7 @@ class PersonService:
             redis (Redis): A Redis client for caching data.
             elastic (AsyncElasticsearch): An Elasticsearch client for querying data.
         """
+
     def __init__(self, redis: Redis, elastic: AsyncElasticsearch):
         self.redis = redis
         self.elastic = elastic
@@ -43,16 +44,16 @@ class PersonService:
         return persons
 
     async def get_persons_films(
-        self,
-        person_id: str
+            self,
+            person_id: str
     ) -> list[FilmResponse] | None:
 
         person_data: Person | None = await self._get_person_from_elastic(person_id)
         if not person_data:
             return None
 
-        return [FilmResponse(uuid=film.uuid, title=film.title, imdb_rating=film.imdb_rating) for film in person_data.films]
-
+        return [FilmResponse(uuid=film.uuid, title=film.title, imdb_rating=film.imdb_rating) for film in
+                person_data.films]
 
     async def _get_person_from_elastic(self, person_id: str) -> Person | None:
         try:
@@ -81,8 +82,7 @@ class PersonService:
 
 @lru_cache()
 def get_person_service(
-    redis: Redis = Depends(get_redis),
-    elastic: AsyncElasticsearch = Depends(get_elastic)
+        redis: Redis = Depends(get_redis),
+        elastic: AsyncElasticsearch = Depends(get_elastic)
 ) -> PersonService:
-
     return PersonService(redis, elastic)

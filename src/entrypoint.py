@@ -1,5 +1,3 @@
-import logging
-import os
 from contextlib import asynccontextmanager
 
 import uvicorn
@@ -14,7 +12,6 @@ from src.api.v1.films import router as films_router
 from src.api.v1.genres import router as genres_router
 from src.api.v1.persons import router as persons_router
 from src.core import config
-from src.core.logger import LOGGING
 from src.db import elastic, redis
 
 

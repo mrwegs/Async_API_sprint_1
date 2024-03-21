@@ -12,10 +12,11 @@ router = APIRouter(
     responses={HTTPStatus.NOT_FOUND: {'description': 'Not found'}},
 )
 
+
 @router.get('/')
 @cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def get_genres(
-    genre_service: GenreService = Depends(get_genre_service)
+        genre_service: GenreService = Depends(get_genre_service)
 ) -> list[Genre]:
     """Метод для получения списка жанров"""
 
@@ -26,11 +27,12 @@ async def get_genres(
 
     return genres
 
+
 @router.get('/{genre_id}')
 @cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
 async def genre_details(
-    genre_id: str,
-    genre_service: GenreService = Depends(get_genre_service)
+        genre_id: str,
+        genre_service: GenreService = Depends(get_genre_service)
 ) -> Genre:
     """Метод для получения полного описания жанра по идентификатору"""
 

@@ -85,15 +85,6 @@ class FilmService:
     async def _put_film_to_cache(self, film: FilmDetails):
         await self.redis.set(film.uuid, film.model_dump_json(), FILM_CACHE_EXPIRE_IN_SECONDS)
 
-    async def _generate_id(
-            self,
-            params: FilterParams,
-            genre: str | None = None,
-            query: str | None = None
-    ):
-        """Метод для генерации идентификатора для сохранения данных о фильмах в кеш."""
-        return 1
-
 
 @lru_cache()
 def get_film_service(

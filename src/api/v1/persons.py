@@ -2,6 +2,7 @@ from http import HTTPStatus
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi_cache.decorator import cache
 
 from src.api.v1.films import FilmResponse
 from src.services.enumtypes import PersonFields, QueryContext
@@ -16,6 +17,7 @@ router = APIRouter(
 )
 
 @router.get('/search')
+@cache(expire=30)
 async def search_persons(
     name: Annotated[str, Query(min_length=3)],
     params: SearchParams = Depends(),
@@ -34,6 +36,7 @@ async def search_persons(
     return persons
 
 @router.get('/{person_id}')
+@cache(expire=30)
 async def person_details(
     person_id: str,
     person_service: PersonService = Depends(get_person_service)
@@ -48,6 +51,7 @@ async def person_details(
 
 
 @router.get('/{person_id}/film')
+@cache(expire=30)
 async def get_films_by_person(
     person_id: str,
     params: FilterParams = Depends(),

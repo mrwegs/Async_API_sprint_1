@@ -8,6 +8,7 @@ from fastapi import (
     Query,
 )
 from pydantic import BaseModel
+from fastapi_cache.decorator import cache
 
 from src.services.enumtypes import FilmworkFields, QueryContext, PersonFields
 from src.services.film import get_film_service, FilmService
@@ -22,6 +23,7 @@ router = APIRouter(
 
 
 @router.get('/search')
+@cache(expire=30)
 async def search_films_by_title(
         title: Annotated[str, Query(min_length=3)],
         params: SearchParams = Depends(),
@@ -43,6 +45,7 @@ async def search_films_by_title(
 
 
 @router.get('/{film_id}', response_model=FilmDetails)
+@cache(expire=30)
 async def film_details(
         film_id: str,
         film_service: FilmService = Depends(get_film_service)
@@ -58,6 +61,7 @@ async def film_details(
 
 
 @router.get('')
+@cache(expire=30)
 async def get_films(
     genre: str | None = None,
     params: FilterParams = Depends(),

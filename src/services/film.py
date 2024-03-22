@@ -28,13 +28,9 @@ class FilmService:
         self.elastic = elastic
 
     async def get_by_id(self, film_id: str) -> FilmDetails | None:
-        film = await self._film_from_cache(film_id)
-
+        film = await self._get_film_from_elastic(film_id)
         if not film:
-            film = await self._get_film_from_elastic(film_id)
-            if not film:
-                return None
-            await self._put_film_to_cache(film)
+            return None
 
         return film
 
@@ -44,7 +40,6 @@ class FilmService:
             **query_request: Unpack[QueryRequest]
     ) -> list[Film]:
 
-        # searcher = ESSearcher(params, genre, title_query)
         searcher = FilmQueryBuilder(params, query_request)
         films = await self._get_films_list(searcher)
 
@@ -73,18 +68,6 @@ class FilmService:
             films.append(Film(**film['_source']))
 
         return films
-
-    async def _film_from_cache(self, film_id: str) -> FilmDetails | None:
-
-        data = await self.redis.get(film_id)
-        if not data:
-            return None
-
-        film = FilmDetails.model_validate_json(data)
-        return film
-
-    async def _put_film_to_cache(self, film: FilmDetails):
-        await self.redis.set(film.uuid, film.model_dump_json(), settings.cache_expire)
 
 
 @lru_cache()

@@ -1,15 +1,8 @@
-import orjson
-from pydantic import BaseModel
-
-from src.models.dumps import orjson_dumps
+from src.models.dumps import BaseOrjsonModel
 
 
-class Genre(BaseModel):
+class Genre(BaseOrjsonModel):
     """Класс для описания жанра"""
 
     uuid: str
     name: str
-
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps

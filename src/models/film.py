@@ -1,29 +1,24 @@
-import orjson
-from pydantic import UUID4, BaseModel
+from pydantic import UUID4
 
-from src.models.dumps import orjson_dumps
+from src.models.dumps import BaseOrjsonModel
 
 
-class Film(BaseModel):
+class Film(BaseOrjsonModel):
     """Класс для краткого описания Кинопроизведения"""
     uuid: str
     title: str | None
     description: str | None
     imdb_rating: float
 
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps
 
-
-class FilmResponse(BaseModel):
+class FilmResponse(BaseOrjsonModel):
     """Класс для описания фильма, передаваемого в ответе пользователю"""
     uuid: str
     title: str | None
     imdb_rating: float
 
 
-class Model(BaseModel):
+class Model(BaseOrjsonModel):
     """Базовый класс для описания Персоналий"""
     uuid: UUID4
     name: str
@@ -34,20 +29,16 @@ class Model(BaseModel):
     def __hash__(self) -> int:
         return self.uuid.int
 
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps
 
-
-class Actor(Model):
+class Actor(BaseOrjsonModel):
     """Класс для описания актера"""
 
 
-class Writer(Model):
+class Writer(BaseOrjsonModel):
     """Класс для описания сценариста"""
 
 
-class FilmDetails(BaseModel):
+class FilmDetails(BaseOrjsonModel):
     """Класс для полного описания Кинопроизведения"""
     uuid: str
     imdb_rating: float | None
@@ -59,7 +50,3 @@ class FilmDetails(BaseModel):
     writers: list[Writer]
     actors_names: list[str]
     writers_names: list[str]
-
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps

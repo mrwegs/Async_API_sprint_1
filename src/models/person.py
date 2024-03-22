@@ -1,49 +1,30 @@
-import orjson
-from pydantic import BaseModel
-
-from src.models.dumps import orjson_dumps
+from src.models.dumps import BaseOrjsonModel
 
 
-class PersonsFilms(BaseModel):
+class PersonsFilms(BaseOrjsonModel):
     """Класс для описани фильмов с участием конкретной персоны"""
     uuid: str
     roles: list[str]
     title: str = ''
     imdb_rating: float = 0.0
 
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps
 
-
-class PersonsFilmsResponse(BaseModel):
+class PersonsFilmsResponse(BaseOrjsonModel):
     """Класс для описани фильмов с участием конкретной персоны,
     отправляемый в ответе пользователю"""
     uuid: str
     roles: list[str]
 
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps
 
-
-class Person(BaseModel):
+class Person(BaseOrjsonModel):
     """Класс для описания персоналий"""
     uuid: str
     full_name: str
     films: list[PersonsFilms]
 
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps
 
-
-class PersonResponse(BaseModel):
+class PersonResponse(BaseOrjsonModel):
     """Класс для описания персоналий, отправляемый в ответе пользователю"""
     uuid: str
     full_name: str
     films: list[PersonsFilmsResponse]
-
-    class Config:
-        json_loads = orjson.loads
-        json_dumps = orjson_dumps

@@ -1,9 +1,8 @@
-import os
-from typing import Optional
-
 from elasticsearch import AsyncElasticsearch
 
-es: Optional[AsyncElasticsearch] = AsyncElasticsearch(os.getenv('ES_URL'))
+from src.core.config import settings
+
+es: AsyncElasticsearch | None = AsyncElasticsearch(settings.elastic_url)
 
 
 # Функция понадобится при внедрении зависимостей

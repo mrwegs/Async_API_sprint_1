@@ -3,7 +3,7 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi_cache.decorator import cache
 
-from src.core import config
+from src.core.config import settings
 from src.models.genre import Genre
 from src.services.genre import GenreService, get_genre_service
 
@@ -14,7 +14,7 @@ router = APIRouter(
 
 
 @router.get('/')
-@cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
+@cache(expire=settings.cache_expire)
 async def get_genres(
         genre_service: GenreService = Depends(get_genre_service)
 ) -> list[Genre]:
@@ -29,7 +29,7 @@ async def get_genres(
 
 
 @router.get('/{genre_id}')
-@cache(expire=config.FILM_CACHE_EXPIRE_IN_SECONDS)
+@cache(expire=settings.cache_expire)
 async def genre_details(
         genre_id: str,
         genre_service: GenreService = Depends(get_genre_service)

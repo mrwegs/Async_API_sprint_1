@@ -3,7 +3,7 @@ from copy import deepcopy
 from typing import Any, Mapping, TypedDict
 
 from src.api.v1.params import FilterParams
-from src.core.config import GENRES_INDEX, MOVIES_INDEX, PERSONS_INDEX
+from src.core.config import settings
 from src.services.enumtypes import QueryContext, TableFields
 
 
@@ -94,7 +94,7 @@ class FilmQueryBuilder(ESQueryBuilder):
     _film_source: Mapping[str, Any] = {
         'includes': ['uuid', 'title', 'description', 'imdb_rating']
     }
-    _index: str = MOVIES_INDEX
+    _index: str = settings.movies_index
 
     @property
     def source(self) -> Mapping[str, Any]:
@@ -109,7 +109,7 @@ class PersonQueryBuilder(ESQueryBuilder):
     _person_source: Mapping[str, Any] = {
         'includes': ['uuid', 'full_name', 'films']
     }
-    _index: str = PERSONS_INDEX
+    _index: str = settings.persons_index
 
     @property
     def source(self) -> Mapping[str, Any]:
@@ -124,7 +124,7 @@ class GenreQueryBuilder(ESQueryBuilder):
     _genre_source: Mapping[str, Any] = {
         'includes': ['uuid', 'name']
     }
-    _index: str = GENRES_INDEX
+    _index: str = settings.genres_index
 
     @property
     def source(self) -> Mapping[str, Any]:

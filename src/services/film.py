@@ -6,7 +6,7 @@ from fastapi import Depends
 from redis.asyncio import Redis
 
 from src.api.v1.params import FilterParams
-from src.core.config import FILM_CACHE_EXPIRE_IN_SECONDS, MOVIES_INDEX
+from src.core.config import settings
 from src.db.elastic import get_elastic
 from src.db.redis import get_redis
 from src.models.film import Film, FilmDetails
@@ -61,7 +61,7 @@ class FilmService:
         films: list[Film] = []
 
         response = await self.elastic.search(
-            index=MOVIES_INDEX,
+            index=settings.movies_index,
             from_=searcher.from_,
             size=searcher.page_size,
             query=searcher.query,
@@ -84,7 +84,7 @@ class FilmService:
         return film
 
     async def _put_film_to_cache(self, film: FilmDetails):
-        await self.redis.set(film.uuid, film.model_dump_json(), FILM_CACHE_EXPIRE_IN_SECONDS)
+        await self.redis.set(film.uuid, film.model_dump_json(), settings.cache_expire)
 
 
 @lru_cache()

@@ -11,21 +11,22 @@ from redis import asyncio as aioredis
 from src.api.v1.films import router as films_router
 from src.api.v1.genres import router as genres_router
 from src.api.v1.persons import router as persons_router
-from src.core import config
+from src.core.config import settings
 from src.db import elastic, redis
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    redis.redis = aioredis.Redis(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_ASYNC_API_DB)
-    elastic.es = AsyncElasticsearch(hosts=[f'http://{config.ELASTIC_HOST}:{config.ELASTIC_PORT}'])
+    redis.redis = aioredis.Redis(host=settings.redis_host, port=settings.redis_port, db=settings.redis_db)
+    elastic.es = AsyncElasticsearch(hosts=[f'http://{settings.elastic_host}:{settings.elastic_port}'])
     FastAPICache.init(RedisBackend(redis.redis), prefix="fastapi-cache")
     yield
     await redis.redis.close()
     await elastic.es.close()
 
+
 app = FastAPI(
-    title=config.PROJECT_NAME,
+    title=settings.project_name,
     lifespan=lifespan,
     docs_url='/api/openapi',
     openapi_url='/api/openapi.json',

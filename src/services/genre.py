@@ -4,7 +4,7 @@ from elasticsearch import AsyncElasticsearch
 from fastapi import Depends
 from redis.asyncio import Redis
 
-from src.core.config import GENRES_INDEX
+from src.core.config import settings
 from src.db.elastic import get_elastic
 from src.db.redis import get_redis
 from src.models.genre import Genre
@@ -36,7 +36,7 @@ class GenreService:
 
     async def _get_genre_by_id(self, genre_id: str) -> Genre | None:
         response = await self.elastic.get(
-            index=GENRES_INDEX,
+            index=settings.genres_index,
             id=genre_id
         )
 
@@ -47,7 +47,7 @@ class GenreService:
 
     async def _get_genres_list(self) -> list[Genre]:
         genres_list = []
-        response = await self.elastic.search(index=GENRES_INDEX)
+        response = await self.elastic.search(index=settings.genres_index)
 
         for genre in response['hits']['hits']:
             genres_list.append(Genre(**genre['_source']))

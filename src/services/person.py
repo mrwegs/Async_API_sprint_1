@@ -6,7 +6,7 @@ from fastapi import Depends
 from redis.asyncio import Redis
 
 from src.api.v1.params import FilterParams
-from src.core.config import PERSONS_INDEX
+from src.core.config import settings
 from src.db.elastic import get_elastic
 from src.db.redis import get_redis
 from src.models.film import FilmResponse
@@ -57,7 +57,7 @@ class PersonService:
 
     async def _get_person_from_elastic(self, person_id: str) -> Person | None:
         try:
-            person = await self.elastic.get(index=PERSONS_INDEX, id=person_id)
+            person = await self.elastic.get(index=settings.persons_index, id=person_id)
         except NotFoundError:
             return None
 

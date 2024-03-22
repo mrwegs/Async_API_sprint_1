@@ -1,5 +1,4 @@
 import datetime
-from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -10,17 +9,18 @@ class PersonES(BaseModel):
 
     model_config = ConfigDict(populate_by_name=True)
 
+
 class MoviesDTO(BaseModel):
     id: str = Field(alias='uuid')
-    rating: Optional[float] = Field(alias='imdb_rating')
-    title: Optional[str]
-    description: Optional[str]
+    rating: float | None = Field(alias='imdb_rating')
+    title: str | None
+    description: str | None
     genre: list[str]
-    actors_names: Optional[list[str]]
-    writers_names: Optional[list[str]]
-    director: Optional[list[str]]
-    actors: Optional[list[PersonES]]
-    writers: Optional[list[PersonES]]
+    actors_names: list[str] | None
+    writers_names: list[str] | None
+    director: list[str] | None
+    actors: list[PersonES] | None
+    writers: list[PersonES] | None
     modified: datetime.datetime
 
     @field_validator('actors_names', 'writers_names', 'director', 'actors', 'writers')

@@ -10,4 +10,4 @@ COPY . .
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt --no-cache-dir
 
-ENTRYPOINT [ "python", "-m", "src.entrypoint" ]
+ENTRYPOINT gunicorn -w 4 -k uvicorn.workers.UvicornWorker --bind unix:/tmp/fastapi.sock src.entrypoint:app

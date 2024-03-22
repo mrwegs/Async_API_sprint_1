@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 
-@router.get('/search')
+@router.get('/search', summary='Поиск персоналий по имени')
 @cache(expire=settings.cache_expire)
 async def search_persons(
         name: Annotated[str, Query(min_length=3)],
@@ -48,7 +48,7 @@ async def search_persons(
     ]
 
 
-@router.get('/{person_id}')
+@router.get('/{person_id}', summary='Получение полного описания персоналии')
 @cache(expire=settings.cache_expire)
 async def person_details(
         person_id: str,
@@ -71,7 +71,7 @@ async def person_details(
     )
 
 
-@router.get('/{person_id}/film')
+@router.get('/{person_id}/film', summary='Получение списка фильмов с участием персоналии')
 @cache(expire=settings.cache_expire)
 async def get_films_by_person(
         person_id: str,

@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get('/search')
+@router.get('/search', summary='Поиск фильмов')
 @cache(expire=settings.cache_expire)
 async def search_films_by_title(
         title: Annotated[str, Query(min_length=3)],
@@ -37,7 +37,7 @@ async def search_films_by_title(
     return [FilmResponse(uuid=film.uuid, title=film.title, imdb_rating=film.imdb_rating) for film in films]
 
 
-@router.get('/{film_id}', response_model=FilmDetails)
+@router.get('/{film_id}', response_model=FilmDetails, summary='Получения полного описания фильма')
 @cache(expire=settings.cache_expire)
 async def film_details(
         film_id: str,
@@ -53,7 +53,7 @@ async def film_details(
     return film
 
 
-@router.get('')
+@router.get('', summary='Получение списка фильмов по жанру')
 @cache(expire=settings.cache_expire)
 async def get_films(
         genre: str | None = None,

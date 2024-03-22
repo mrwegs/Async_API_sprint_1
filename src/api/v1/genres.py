@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 
-@router.get('/')
+@router.get('/', summary='Получение списка жанров')
 @cache(expire=settings.cache_expire)
 async def get_genres(
         genre_service: GenreService = Depends(get_genre_service)
@@ -28,7 +28,7 @@ async def get_genres(
     return genres
 
 
-@router.get('/{genre_id}')
+@router.get('/{genre_id}', summary='Получение полного описания жанра')
 @cache(expire=settings.cache_expire)
 async def genre_details(
         genre_id: str,

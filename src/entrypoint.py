@@ -19,7 +19,7 @@ from src.db import elastic, redis
 async def lifespan(app: FastAPI):
     redis.redis = aioredis.Redis(host=settings.redis_host, port=settings.redis_port, db=settings.redis_db)
     elastic.es = AsyncElasticsearch(hosts=[f'http://{settings.elastic_host}:{settings.elastic_port}'])
-    FastAPICache.init(RedisBackend(redis.redis), prefix="fastapi-cache")
+    FastAPICache.init(RedisBackend(redis.redis), prefix="fastapi-cache", key_builder=redis.my_key_builder)
     yield
     await redis.redis.close()
     await elastic.es.close()

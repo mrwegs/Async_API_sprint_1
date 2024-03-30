@@ -10,9 +10,11 @@ class Settings(BaseSettings):
 
     elastic_host: str = ...
     elastic_port: int = 9200
+    es_movies_index: str = 'movies'
 
     async_api_host: str = ...
     async_api_port: int = 8000
+    api_movies_endpoint: str = '/api/v1/films'
 
 
-settings = Settings()
+test_settings = Settings()

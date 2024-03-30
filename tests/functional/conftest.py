@@ -6,6 +6,7 @@ import aiohttp
 import pytest_asyncio
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
+from redis.asyncio import Redis
 
 # from tests.functional.settings import settings
 from tests.functional.settings import dev_settings as settings, es_settings
@@ -16,6 +17,13 @@ def event_loop():
     loop = asyncio.get_event_loop()
     yield loop
     loop.close()
+
+
+@pytest_asyncio.fixture(scope='session')
+async def redis():
+    redis = Redis(host=settings.redis_host, port=settings.redis_port, db=settings.redis_db)
+    yield redis
+    await redis.close()
 
 
 @pytest_asyncio.fixture(scope="session")
@@ -32,9 +40,8 @@ async def es():
 
 @pytest_asyncio.fixture(scope="session")
 async def client_session():
-    session = aiohttp.ClientSession()
-    yield session
-    await session.close()
+    async with aiohttp.ClientSession() as session:
+        yield session
 
 
 @pytest_asyncio.fixture(scope="session")
@@ -58,7 +65,7 @@ async def es_write_data(es: AsyncElasticsearch):
             await es.indices.delete(index=index)
         await es.indices.create(index=index, mappings=mappings, settings=settings)
 
-        updated, errors = await async_bulk(client=es, actions=data)
+        updated, errors = await async_bulk(client=es, actions=data, refresh=True)
 
         if errors:
             raise Exception('Ошибка записи данных в Elasticsearch')

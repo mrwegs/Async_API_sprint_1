@@ -32,11 +32,13 @@ class Model(BaseOrjsonModel):
 
 class Actor(BaseOrjsonModel):
     """Класс для описания актера"""
-
+    uuid: str
+    name: str
 
 class Writer(BaseOrjsonModel):
     """Класс для описания сценариста"""
-
+    uuid: str
+    name: str
 
 class FilmDetails(BaseOrjsonModel):
     """Класс для полного описания Кинопроизведения"""

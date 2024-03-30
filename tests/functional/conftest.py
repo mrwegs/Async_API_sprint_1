@@ -109,6 +109,48 @@ def film_data():
 
 
 @pytest_asyncio.fixture(scope="session")
+def person_data():
+    es_data = [{
+          "uuid": str(uuid.uuid4()),
+          "full_name": "Irvin Kershner",
+          "films": [
+            {
+              "uuid": "0312ed51-8833-413f-bff5-0e139c11264a",
+              "title": "Star Wars: Episode V - The Empire Strikes Back",
+              "imdb_rating": 8.7,
+              "roles": [
+                "director"
+              ]
+            },
+            {
+              "uuid": "4f53452f-a402-4a76-89fd-f034eeb8d657",
+              "title": "Star Wars: Episode V - The Empire Strikes Back: Deleted Scenes",
+              "imdb_rating": 7.6,
+              "roles": [
+                "director"
+              ]
+            },
+            {
+              "uuid": "a2ff04cc-eede-43fc-a503-07f037be8cc8",
+              "title": "Star Wars: Music by John Williams",
+              "imdb_rating": 8.5,
+              "roles": [
+                "actor"
+              ]
+            }
+          ]
+        } for _ in range(60)]
+
+    bulk_query: list[dict] = []
+    for row in es_data:
+        data = {'_index': 'persons', '_id': row['uuid']}
+        data.update({'_source': row})
+        bulk_query.append(data)
+
+    return bulk_query
+
+
+@pytest_asyncio.fixture(scope="session")
 def persons_index_settings():
     index = es_settings.persons_index_name
     mappings = es_settings.persons_mappings

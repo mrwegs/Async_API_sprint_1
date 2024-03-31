@@ -32,7 +32,7 @@ async def test_person_film(
     await es_write_data(person_data, index, mappings, settings)
 
     item = person_data[0]
-    uri = f'/api/v1/persons/{item['_id']}/film'
+    uri = f'/api/v1/persons/{item["_id"]}/film'
     body, status = await make_get_request(uri=uri)
 
     assert status == 200
@@ -67,7 +67,7 @@ async def test_person_cache(
     await es_write_data(person_data, index, mappings, settings)
 
     item = person_data[0]
-    uri = f'/api/v1/persons/{item['_id']}'
+    uri = f'/api/v1/persons/{item["_id"]}'
     if add_uri:
         uri += add_uri['uri']
     await make_get_request(uri=uri)

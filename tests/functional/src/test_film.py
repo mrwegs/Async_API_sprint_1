@@ -52,12 +52,7 @@ async def test_films(
         movies_index_settings
 ):
     index, mappings, settings = movies_index_settings
-    await es_write_data(
-        data=film_data,
-        index=index,
-        mappings=mappings,
-        settings=settings
-    )
+    await es_write_data(film_data,index,mappings,settings)
 
     body, status = await make_get_request(uri='/api/v1/films/', data=query_data)
 
@@ -73,12 +68,8 @@ async def test_film_item(
         movies_index_settings
 ):
     index, mappings, settings = movies_index_settings
-    await es_write_data(
-        data=film_data,
-        index=index,
-        mappings=mappings,
-        settings=settings
-    )
+    await es_write_data(film_data,index,mappings,settings)
+
     item = film_data[0]
     uri = '/api/v1/films/' + item['_id']
     body, status = await make_get_request(uri=uri)
@@ -96,12 +87,8 @@ async def test_film_cache(
         movies_index_settings
 ):
     index, mappings, settings = movies_index_settings
-    await es_write_data(
-        data=film_data,
-        index=index,
-        mappings=mappings,
-        settings=settings
-    )
+    await es_write_data(film_data, index, mappings, settings)
+
     item = film_data[0]
     uri = '/api/v1/films/' + item['_id']
     await make_get_request(uri=uri)

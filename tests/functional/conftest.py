@@ -1,6 +1,6 @@
 import asyncio
-from typing import Mapping
 import uuid
+from typing import Mapping
 
 import aiohttp
 import pytest_asyncio
@@ -8,7 +8,6 @@ from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
 from redis.asyncio import Redis
 
-# from tests.functional.settings import settings
 from tests.functional.settings import dev_settings as settings, es_settings
 
 
@@ -44,7 +43,7 @@ async def client_session():
 
 @pytest_asyncio.fixture(scope="session")
 async def make_get_request(client_session: aiohttp.ClientSession):
-    async def inner(uri: str, data: Mapping):
+    async def inner(uri: str, data: Mapping = None):
         url = settings.service_url + uri
 
         async with client_session.get(url, params=data) as response:
@@ -63,7 +62,7 @@ async def es_write_data(es: AsyncElasticsearch):
             await es.indices.delete(index=index)
         await es.indices.create(index=index, mappings=mappings, settings=settings)
 
-        updated, errors = await async_bulk(client=es, actions=data, refresh=True)
+        updated, errors = await async_bulk(client=es, actions=data, refresh="wait_for")
 
         if errors:
             raise Exception('Ошибка записи данных в Elasticsearch')
@@ -72,7 +71,16 @@ async def es_write_data(es: AsyncElasticsearch):
 
 
 @pytest_asyncio.fixture(scope="session")
+async def es_delete_data(es):
+    async def inner(id: str, index: str):
+        await es.delete(id=id, index=index)
+
+    return inner
+
+
+@pytest_asyncio.fixture(scope="session")
 def film_data():
+  
     index_name = es_settings.movies_index_name
 
 # 1. Генерируем данные для ES
@@ -93,9 +101,6 @@ def film_data():
             {'uuid': 'caf76c67-c0fe-477e-8766-3ab3ff2574b5', 'name': 'Ben'},
             {'uuid': 'b45bd7bc-2e16-46d5-b125-983d356768c6', 'name': 'Howard'}
         ],
-        # 'created_at': datetime.datetime.now().isoformat(),
-        # 'updated_at': datetime.datetime.now().isoformat(),
-        # 'film_work_type': 'movie'
     } for _ in range(60)]
 
     bulk_query: list[dict] = []
@@ -130,6 +135,29 @@ def person_data():
         bulk_query.append(data)
 
     return bulk_query
+
+@pytest_asyncio.fixture(scope="session")
+def person_data():
+    index_name = es_settings.persons_index_name
+    es_data = [{
+        'uuid': str(uuid.uuid4()),
+        'full_name': 'Anna De Armas',
+        'films': [
+            {'uuid': 'fb111f22-121e-44a7-b78f-b19191810fbf', 'title': 'Blade Runner', 'imdb_rating': 8.0,
+             'roles': ['actor']},
+            {'uuid': 'caf76c67-c0fe-477e-8766-3ab3ff2574b5', 'title': 'Knives Out', 'imdb_rating': 7.9,
+             'roles': ['actor']},
+        ],
+    } for _ in range(60)]
+
+    bulk_query: list[dict] = []
+    for row in es_data:
+        data = {'_index': index_name, '_id': row['uuid']}
+        data.update({'_source': row})
+        bulk_query.append(data)
+
+    return bulk_query
+
 
 @pytest_asyncio.fixture(scope="session")
 def persons_index_settings():

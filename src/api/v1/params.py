@@ -11,7 +11,7 @@ class PageParams(BaseModel):
     """Класс для описания параметров страницы"""
 
     page_size: Annotated[int, Query(gt=0, lt=settings.max_page_size)] = 50
-    page_number: Annotated[int, Query(gt=0)] = 1
+    page_number: Annotated[int, Query(gt=0, lt=10000 / settings.max_page_size)] = 1
 
 
 class FilterParams(PageParams):

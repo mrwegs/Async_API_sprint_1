@@ -1,93 +1,98 @@
 import pytest
 
-from tests.functional.settings import es_settings
-
-# @pytest.mark.parametrize(
-#         'route_type',
-#         ['films', 'persons']
-# )
-# @pytest.mark.parametrize(
-#         'query_data, expected_answer',
-#         [
-#             (
-#                 {'title': 'The Star'},
-#                 {'status': 200, 'length': 50}
-#             ),
-#             (
-#                 {'title': 'Mashed Potato'},
-#                 {'status': 404, 'length': 1}
-#             )
-#         ]
-# )
-# @pytest.mark.asyncio
-# async def test_search(
-#     make_get_request,
-#     es_write_data,
-#     film_data,
-#     movies_index_settings,
-#     # route_type,
-#     query_data,
-#     expected_answer
-# ):
-#     index, mappings, settings = movies_index_settings
-
-#     await es_write_data(
-#         film_data,
-#         index,
-#         mappings,
-#         settings
-#     )
-
-#     body, status = await make_get_request('/api/v1/films/search', query_data)
-
-#     assert status == expected_answer['status']
-#     assert len(body) == expected_answer['length']
-
-
 @pytest.mark.parametrize(
-    'params, expected_answer',
+    'query_data, expected_answer',
     [
         (
-            {'title': 'The Star', 'page_size': 20},
-            {'status': 200, 'length': 20}
+                {},
+                {'status': 200, 'length': 50}
         ),
         (
-            {'title': 'The Star', 'page_number': 9999999},
-            {'status': 404, 'length': 1}
+                {'page_size': 7},
+                {'status': 200, 'length': 7}
         ),
         (
-            {'title': 'The Star', 'page_size': 9999999},
-            {'status': 422, 'length': 1}
+                {'page_size': 17},
+                {'status': 200, 'length': 17}
         ),
         (
-            {'title': 'Y'},
-            {'status': 422, 'length': 1}
+                {'page_size': 0},
+                {'status': 422, 'length': 1}
         ),
         (
-            {'title': 'The Star', 'sort': 'dzhigurda'},
-            {'status': 422, 'length': 1}
+                {'genre': 'Action'},
+                {'status': 200, 'length': 50}
+        ),
+        (
+                {'genre': 'Action', 'page_size': 12},
+                {'status': 200, 'length': 12}
+        ),
+        (
+                {'genre': 'Sci-Fi'},
+                {'status': 200, 'length': 50}
+        ),
+        (
+                {'genre': 'Sci-Fi', 'page_size': 15},
+                {'status': 200, 'length': 15}
+        ),
+        (
+                {'genre': 'Drama'},
+                {'status': 404, 'length': 1}
         ),
     ]
 )
 @pytest.mark.asyncio
-async def test_searh_films(
-    make_get_request,
-    es_write_data,
-    film_data,
-    movies_index_settings,
-    params,
-    expected_answer
+async def test_films(
+        query_data,
+        expected_answer,
+        es_write_data,
+        make_get_request,
+        film_data,
+        movies_index_settings
 ):
     index, mappings, settings = movies_index_settings
+    await es_write_data(film_data,index,mappings,settings)
 
-    es_write_data(
-        film_data,
-        index,
-        mappings,
-        settings
-    )
-
-    body, status = await make_get_request('/api/v1/films/search', params)
+    body, status = await make_get_request(uri='/api/v1/films/', data=query_data)
 
     assert status == expected_answer['status']
     assert len(body) == expected_answer['length']
+
+
+@pytest.mark.asyncio
+async def test_film_item(
+        es_write_data,
+        make_get_request,
+        film_data,
+        movies_index_settings
+):
+    index, mappings, settings = movies_index_settings
+    await es_write_data(film_data,index,mappings,settings)
+
+    item = film_data[0]
+    uri = '/api/v1/films/' + item['_id']
+    body, status = await make_get_request(uri=uri)
+
+    assert status == 200
+    assert item['_source'] == body
+
+
+@pytest.mark.asyncio
+async def test_film_cache(
+        es_write_data,
+        es_delete_data,
+        make_get_request,
+        film_data,
+        movies_index_settings
+):
+    index, mappings, settings = movies_index_settings
+    await es_write_data(film_data, index, mappings, settings)
+
+    item = film_data[0]
+    uri = '/api/v1/films/' + item['_id']
+    await make_get_request(uri=uri)
+    await es_delete_data(id=item['_id'], index=index)
+
+    body, status = await make_get_request(uri=uri)
+    assert status == 200
+    assert item['_source'] == body

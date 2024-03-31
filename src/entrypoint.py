@@ -41,3 +41,11 @@ app.include_router(persons_router, prefix='/api/v1/persons')
 @app.get('/')
 def index():
     return {'hello': 'world'}
+
+
+if __name__ == '__main__':
+    uvicorn.run(
+        'src.entrypoint:app',
+        host='0.0.0.0',
+        port=8000,
+    )

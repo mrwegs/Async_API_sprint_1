@@ -10,6 +10,8 @@ services:
       sh -c "python3 -m src.entrypoint"
     env_file:
       - ../../.env
+    volumes:
+      - project:/opt/async_api
     ports:
       - "8001:8000"
     depends_on:
@@ -23,6 +25,8 @@ services:
     container_name: tests
     env_file:
       - .env
+    volumes:
+      - project:/opt/async_api
     entrypoint: >
       sh -c "pip install -r tests/functional/requirements.txt
       && python3 -m tests.functional.utils.wait_for_es
@@ -54,3 +58,11 @@ services:
       test: [ "CMD", "redis-cli","ping" ]
       interval: 3s
       retries: 3
+
+volumes:
+  project:
+    driver: local
+    driver_opts:
+      type: none
+      device: ../../
+      o: bind

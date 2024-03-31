@@ -1,6 +1,6 @@
 import asyncio
 import uuid
-from typing import Mapping
+from typing import Any, Mapping
 
 import aiohttp
 import pytest_asyncio
@@ -43,7 +43,7 @@ async def client_session():
 
 @pytest_asyncio.fixture(scope="session")
 async def make_get_request(client_session: aiohttp.ClientSession):
-    async def inner(uri: str, data: Mapping = None):
+    async def inner(uri: str, data: Mapping | None = None):
         url = settings.service_url + uri
 
         async with client_session.get(url, params=data) as response:
@@ -57,12 +57,12 @@ async def make_get_request(client_session: aiohttp.ClientSession):
 
 @pytest_asyncio.fixture(scope="session")
 async def es_write_data(es: AsyncElasticsearch):
-    async def inner(data: list[Mapping], index: str, mappings: Mapping, settings: Mapping):
+    async def inner(data: list[dict[str, Any]], index: str, mappings: Mapping, settings: Mapping):
         if await es.indices.exists(index=index):
             await es.indices.delete(index=index)
         await es.indices.create(index=index, mappings=mappings, settings=settings)
 
-        updated, errors = await async_bulk(client=es, actions=data, refresh="wait_for")
+        updated, errors = await async_bulk(client=es, actions=data, refresh=True)
 
         if errors:
             raise Exception('Ошибка записи данных в Elasticsearch')

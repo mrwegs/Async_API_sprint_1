@@ -1,6 +1,5 @@
 import pytest
 
-
 @pytest.mark.parametrize(
     'query_data, expected_answer',
     [

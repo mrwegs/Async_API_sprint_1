@@ -43,6 +43,9 @@ class Settings(EnvSettings):
 
     service_url: str = f'http://{async_api_host}:{async_api_port}'
 
+    persons_uri: str = '/api/v1/persons'
+    films_uri: str = '/api/v1/films'
+    genres_uri: str = '/api/v1/genres'
 
 
 settings = Settings()

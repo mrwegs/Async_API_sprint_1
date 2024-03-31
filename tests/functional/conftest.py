@@ -1,7 +1,7 @@
 import asyncio
-import datetime
 from typing import Mapping
 import uuid
+
 import aiohttp
 import pytest_asyncio
 from elasticsearch import AsyncElasticsearch
@@ -33,8 +33,6 @@ async def es():
 
     es = AsyncElasticsearch(hosts=f'http://{host}:{port}', verify_certs=False)
     yield es
-    for index in es_settings.index_list:
-        await es.indices.delete(index=index, allow_no_indices=True)
     await es.close()
 
 
@@ -75,6 +73,8 @@ async def es_write_data(es: AsyncElasticsearch):
 
 @pytest_asyncio.fixture(scope="session")
 def film_data():
+    index_name = es_settings.movies_index_name
+
 # 1. Генерируем данные для ES
     es_data = [{
         'uuid': str(uuid.uuid4()),
@@ -100,12 +100,36 @@ def film_data():
 
     bulk_query: list[dict] = []
     for row in es_data:
-        data = {'_index': 'movies', '_id': row['uuid']}
+        data = {'_index': index_name, '_id': row['uuid']}
         data.update({'_source': row})
         bulk_query.append(data)
 
     return bulk_query
 
+@pytest_asyncio.fixture(scope="session")
+def person_data():
+    index_name = es_settings.persons_index_name
+
+# 1. Генерируем данные для ES
+    es_data = [{
+        'uuid': str(uuid.uuid4()),
+        'full_name': 'Anna De Armas',
+        'films': [
+            {'uuid': 'fb111f22-121e-44a7-b78f-b19191810fbf', 'title': 'Blade Runner', 'imdb_rating': 8.0, 'roles': ['actor']},
+            {'uuid': 'caf76c67-c0fe-477e-8766-3ab3ff2574b5', 'title': 'Knives Out', 'imdb_rating': 7.9, 'roles': ['actor']},
+        ],
+        # 'created_at': datetime.datetime.now().isoformat(),
+        # 'updated_at': datetime.datetime.now().isoformat(),
+        # 'film_work_type': 'movie'
+    } for _ in range(60)]
+
+    bulk_query: list[dict] = []
+    for row in es_data:
+        data = {'_index': index_name, '_id': row['uuid']}
+        data.update({'_source': row})
+        bulk_query.append(data)
+
+    return bulk_query
 
 @pytest_asyncio.fixture(scope="session")
 def persons_index_settings():
@@ -132,3 +156,34 @@ def genres_index_settings():
     settings = es_settings.genres_settings
 
     return index, mappings, settings
+
+
+@pytest_asyncio.fixture(scope="session")
+def persons_route():
+    return settings.persons_uri
+
+
+@pytest_asyncio.fixture(scope="session")
+def films_route():
+    return settings.films_uri
+
+
+@pytest_asyncio.fixture(scope='session')
+async def upload_data_to_es(
+    es_write_data,
+    film_data,
+    person_data
+):
+    await es_write_data(
+        film_data,
+        es_settings.movies_index_name,
+        es_settings.movies_mappings,
+        es_settings.movies_settings
+    )
+
+    await es_write_data(
+        person_data,
+        es_settings.persons_index_name,
+        es_settings.persons_mappings,
+        es_settings.persons_settings
+    )

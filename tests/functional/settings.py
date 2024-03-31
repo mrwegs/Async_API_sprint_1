@@ -52,9 +52,4 @@ settings = Settings()
 
 es_settings = ESIndexSettings()
 
-dev_settings = Settings(
-    redis_host='127.0.0.1',
-    elastic_host='127.0.0.1',
-    async_api_host='l127.0.0.1',
-    service_url='http://127.0.0.1:80'
-)
+dev_settings = Settings()

@@ -166,3 +166,4 @@ cython_debug/
 .env.bkp
 .vscode
 *.DS_Store
+tests/functional/docker-compose.dev.yml

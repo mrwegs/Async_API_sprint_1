@@ -2,7 +2,7 @@ import time
 
 from redis import Redis
 
-from functional.settings import settings
+from tests.functional.settings import settings
 
 if __name__ == '__main__':
     host = settings.redis_host
@@ -12,4 +12,5 @@ if __name__ == '__main__':
     while True:
         if redis_client.ping():
             break
+        print('Wait redis...')
         time.sleep(1)

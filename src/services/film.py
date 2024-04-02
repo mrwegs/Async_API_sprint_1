@@ -1,17 +1,16 @@
 from functools import lru_cache
 from typing import Unpack
 
-from elasticsearch import AsyncElasticsearch, NotFoundError
 from fastapi import Depends
-from redis.asyncio import Redis
 
+from src.core.repository.redis import get_repo
+from src.core.searcher.elastic import SortingSearcher, get_sorting_searcher
 from src.api.v1.params import FilterParams
 from src.core.config import settings
-from src.db.elastic import get_elastic
-from src.db.redis import get_redis
+from src.core.repository.base import Repository
 from src.models.film import Film, FilmDetails
-from src.services.query_builder import (ESQueryBuilder, FilmQueryBuilder,
-                                        QueryRequest)
+from src.core.query_builder.sortbuilder import QueryRequest
+from src.core.query_builder.film import FilmQueryBuilder
 
 
 class FilmService:
@@ -23,56 +22,36 @@ class FilmService:
             elastic (AsyncElasticsearch): An Elasticsearch client for searching film data.
         """
 
-    def __init__(self, redis: Redis, elastic: AsyncElasticsearch):
-        self.redis = redis
-        self.elastic = elastic
+    def __init__(self, repo: Repository, searcher: SortingSearcher):
+        self.repo = repo
+        self.searcher = searcher
 
     async def get_by_id(self, film_id: str) -> FilmDetails | None:
-        film = await self._get_film_from_elastic(film_id)
+        film = await self.searcher.get(film_id, index=settings.movies_index)
+
         if not film:
             return None
 
-        return film
+        return FilmDetails(**film)
 
     async def get_films_list(
             self,
             params: FilterParams,
             **query_request: Unpack[QueryRequest]
-    ) -> list[Film]:
+    ) -> list[Film] | None:
 
-        searcher = FilmQueryBuilder(params, query_request)
-        films = await self._get_films_list(searcher)
+        query_builder = FilmQueryBuilder(params, query_request)
+        films = await self.searcher.search_with_sorting(query_builder)
 
-        return films
-
-    async def _get_film_from_elastic(self, film_id: str) -> FilmDetails | None:
-        try:
-            doc = await self.elastic.get(index='movies', id=film_id)
-        except NotFoundError:
+        if not films:
             return None
-        return FilmDetails(**doc['_source'])
 
-    async def _get_films_list(self, searcher: ESQueryBuilder) -> list[Film]:
-        films: list[Film] = []
-
-        response = await self.elastic.search(
-            index=settings.movies_index,
-            from_=searcher.from_,
-            size=searcher.page_size,
-            query=searcher.query,
-            sort=searcher.sort,
-            source=searcher.source
-        )
-
-        for film in response['hits']['hits']:
-            films.append(Film(**film['_source']))
-
-        return films
+        return [Film(**doc) for doc in films]
 
 
 @lru_cache()
 def get_film_service(
-        redis: Redis = Depends(get_redis),
-        elastic: AsyncElasticsearch = Depends(get_elastic),
+        repo: Repository = Depends(get_repo),
+        searcher: SortingSearcher = Depends(get_sorting_searcher),
 ) -> FilmService:
-    return FilmService(redis, elastic)
+    return FilmService(repo, searcher)

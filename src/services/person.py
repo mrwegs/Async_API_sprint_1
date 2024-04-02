@@ -1,18 +1,17 @@
 from functools import lru_cache
 from typing import Unpack
 
-from elasticsearch import AsyncElasticsearch, NotFoundError
 from fastapi import Depends
-from redis.asyncio import Redis
 
+from src.core.repository.base import Repository
+from src.core.repository.redis import get_repo
+from src.core.searcher.elastic import SortingSearcher, get_sorting_searcher
 from src.api.v1.params import FilterParams
 from src.core.config import settings
-from src.db.elastic import get_elastic
-from src.db.redis import get_redis
 from src.models.film import FilmResponse
 from src.models.person import Person
-from src.services.query_builder import (ESQueryBuilder, PersonQueryBuilder,
-                                        QueryRequest)
+from src.core.query_builder.sortbuilder import QueryRequest
+from src.core.query_builder.person import PersonQueryBuilder
 
 
 class PersonService:
@@ -24,65 +23,49 @@ class PersonService:
             elastic (AsyncElasticsearch): An Elasticsearch client for querying data.
         """
 
-    def __init__(self, redis: Redis, elastic: AsyncElasticsearch):
-        self.redis = redis
-        self.elastic = elastic
+    def __init__(self, repo: Repository, searcher: SortingSearcher):
+        self.repo = repo
+        self.searcher = searcher
 
     async def get_person_by_id(self, person_id: str) -> Person | None:
-        person = await self._get_person_from_elastic(person_id)
+        person = await self.searcher.get(person_id, index=settings.persons_index)
 
-        return person
+        if not person:
+            return None
+
+        return Person(**person)
 
     async def get_persons_list(
             self,
             params: FilterParams,
             **query_request: Unpack[QueryRequest]
-    ) -> list[Person]:
+    ) -> list[Person] | None:
         searcher = PersonQueryBuilder(params, query_request)
-        persons = await self._get_persons_from_elastic(searcher)
+        persons = await self.searcher.search_with_sorting(searcher)
 
-        return persons
+        if not persons:
+            return None
+
+        return [Person(**doc) for doc in persons]
 
     async def get_persons_films(
             self,
             person_id: str
     ) -> list[FilmResponse] | None:
 
-        person_data: Person | None = await self._get_person_from_elastic(person_id)
-        if not person_data:
+        person_data = await self.searcher.get(person_id, index=settings.persons_index)
+        person = Person(**person_data)
+
+        if not person:
             return None
 
         return [FilmResponse(uuid=film.uuid, title=film.title, imdb_rating=film.imdb_rating) for film in
-                person_data.films]
-
-    async def _get_person_from_elastic(self, person_id: str) -> Person | None:
-        try:
-            person = await self.elastic.get(index=settings.persons_index, id=person_id)
-        except NotFoundError:
-            return None
-
-        return Person(**person['_source'])
-
-    async def _get_persons_from_elastic(self, searcher: ESQueryBuilder) -> list[Person]:
-        films = []
-
-        response = await self.elastic.search(
-            index=searcher.index,
-            from_=searcher.from_,
-            size=searcher.page_size,
-            query=searcher.query,
-            sort=searcher.sort,
-        )
-
-        for film in response['hits']['hits']:
-            films.append(Person(**film['_source']))
-
-        return films
+                person.films]
 
 
 @lru_cache()
 def get_person_service(
-        redis: Redis = Depends(get_redis),
-        elastic: AsyncElasticsearch = Depends(get_elastic)
+        repo: Repository = Depends(get_repo),
+        searcher: SortingSearcher = Depends(get_sorting_searcher),
 ) -> PersonService:
-    return PersonService(redis, elastic)
+    return PersonService(repo, searcher)

@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_cache.decorator import cache
 
 from src.api.v1.films import FilmResponse
-from src.api.v1.params import FilterParams, SearchParams
+from src.api.v1.params import SearchParams
 from src.core.config import settings
 from src.models.person import PersonResponse, PersonsFilmsResponse
 from src.services.enumtypes import PersonFields, QueryContext
@@ -75,7 +75,6 @@ async def person_details(
 @cache(expire=settings.cache_expire)
 async def get_films_by_person(
         person_id: str,
-        params: FilterParams = Depends(),
         person_service: PersonService = Depends(get_person_service)
 ) -> list[FilmResponse]:
     """Метод для получения списка фильмов с участием персоналии по идентификатору"""

@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class Setting(BaseSettings):
-    model_config = SettingsConfigDict(env_file=f'.env', env_file_encoding='utf-8', extra='ignore')
+    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', extra='ignore')
 
     project_name: str = 'movies'
     redis_host: str = '127.0.0.1'
@@ -31,3 +31,8 @@ class Setting(BaseSettings):
 
 
 settings = Setting()
+
+dev_settings = Setting(
+    redis_host='127.0.0.1',
+    elastic_host='127.0.0.1'
+)

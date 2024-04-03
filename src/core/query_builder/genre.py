@@ -1,7 +1,7 @@
 from typing import Any, Mapping
 
-from src.core.query_builder.base import PaginationBuilder
 from src.core.config import settings
+from src.core.query_builder.base import PaginationBuilder
 
 
 class GenreQueryBuilder(PaginationBuilder):

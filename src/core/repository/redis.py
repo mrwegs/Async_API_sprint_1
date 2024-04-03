@@ -1,11 +1,12 @@
+from functools import lru_cache
 from typing import Generic
 
 from fastapi import Depends
 from redis.asyncio import Redis
 
-from src.db.redis import get_redis
 from src.core.repository.base import Repository
 from src.core.types import Model
+from src.db.redis import get_redis
 
 
 class RedisRepo(Repository, Generic[Model]):
@@ -31,7 +32,8 @@ class RedisRepo(Repository, Generic[Model]):
         await self._connection.set(key, value)
 
 
-async def get_repo(
+@lru_cache()
+def get_repo(
     redis: Redis = Depends(get_redis)
 ) -> RedisRepo:
     return RedisRepo(redis)

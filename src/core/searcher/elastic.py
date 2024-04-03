@@ -1,14 +1,15 @@
+from functools import lru_cache
 from typing import Generic, Sequence
 
 from elastic_transport import ObjectApiResponse
 from elasticsearch import AsyncElasticsearch
 from fastapi import Depends
 
-from src.core.query_builder.sortbuilder import SortQueryBuilder
-from src.db.elastic import get_elastic
-from src.core.types import Model
 from src.core.query_builder.base import PaginationBuilder
+from src.core.query_builder.sortbuilder import SortQueryBuilder
 from src.core.searcher.base import Searcher
+from src.core.types import Model
+from src.db.elastic import get_elastic
 
 
 class ElasticSearcher(Searcher, Generic[Model]):
@@ -75,13 +76,15 @@ class SortingSearcher(ElasticSearcher, Generic[Model]):
         return [doc['_source'] for doc in response['hits']['hits']]
 
 
-async def get_searcher(
+@lru_cache()
+def get_searcher(
         es: AsyncElasticsearch = Depends(get_elastic)
 ) -> ElasticSearcher:
     return ElasticSearcher(es)
 
 
-async def get_sorting_searcher(
+@lru_cache()
+def get_sorting_searcher(
         es: AsyncElasticsearch = Depends(get_elastic)
 ) -> SortingSearcher:
     return SortingSearcher(es)

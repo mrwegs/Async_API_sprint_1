@@ -3,6 +3,7 @@ from typing import Generic
 
 from src.core.types import Model
 
+
 class Repository(ABC, Generic[Model]):
     """The Repository class defines an abstract
     interface for interacting with a data store.

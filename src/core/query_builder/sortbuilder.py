@@ -1,7 +1,7 @@
 from typing import Any, TypedDict
 
-from src.core.query_builder.base import PaginationBuilder
 from src.api.v1.params import FilterParams
+from src.core.query_builder.base import PaginationBuilder
 from src.services.enumtypes import QueryContext, TableFields
 
 

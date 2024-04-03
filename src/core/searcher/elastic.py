@@ -1,7 +1,8 @@
-
 from typing import Generic, Sequence
+
 from elastic_transport import ObjectApiResponse
 from elasticsearch import AsyncElasticsearch
+from fastapi import Depends
 
 from src.core.query_builder.sortbuilder import SortQueryBuilder
 from src.db.elastic import get_elastic
@@ -74,9 +75,13 @@ class SortingSearcher(ElasticSearcher, Generic[Model]):
         return [doc['_source'] for doc in response['hits']['hits']]
 
 
-async def get_searcher() -> ElasticSearcher:
-    return ElasticSearcher(await get_elastic())
+async def get_searcher(
+        es: AsyncElasticsearch = Depends(get_elastic)
+) -> ElasticSearcher:
+    return ElasticSearcher(es)
 
 
-async def get_sorting_searcher() -> SortingSearcher:
-    return SortingSearcher(await get_elastic())
+async def get_sorting_searcher(
+        es: AsyncElasticsearch = Depends(get_elastic)
+) -> SortingSearcher:
+    return SortingSearcher(es)

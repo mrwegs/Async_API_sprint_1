@@ -1,4 +1,6 @@
 from typing import Generic
+
+from fastapi import Depends
 from redis.asyncio import Redis
 
 from src.db.redis import get_redis
@@ -29,5 +31,7 @@ class RedisRepo(Repository, Generic[Model]):
         await self._connection.set(key, value)
 
 
-async def get_repo() -> RedisRepo:
-    return RedisRepo(await get_redis())
+async def get_repo(
+    redis: Redis = Depends(get_redis)
+) -> RedisRepo:
+    return RedisRepo(redis)

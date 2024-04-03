@@ -26,6 +26,9 @@ class GenreService:
         self.repo = repo
         self.searcher = searcher
 
+    def __repr__(self):
+        return self.__class__.__name__
+
     async def get_genre_by_id(self, genre_id: str) -> Genre | None:
         try:
             genre = await self.searcher.get(genre_id, index=settings.genres_index)

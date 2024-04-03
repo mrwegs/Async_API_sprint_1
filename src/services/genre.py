@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+import elasticsearch
 from fastapi import Depends
 
 from src.core.query_builder.genre import GenreQueryBuilder
@@ -26,7 +27,10 @@ class GenreService:
         self.searcher = searcher
 
     async def get_genre_by_id(self, genre_id: str) -> Genre | None:
-        genre = await self.searcher.get(genre_id, index=settings.genres_index)
+        try:
+            genre = await self.searcher.get(genre_id, index=settings.genres_index)
+        except elasticsearch.NotFoundError:
+            genre = None
 
         if not genre:
             return None

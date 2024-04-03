@@ -134,6 +134,26 @@ def person_data():
     return bulk_query
 
 
+@pytest_asyncio.fixture(scope='session')
+async def genre_data():
+    index_name: str = es_settings.genres_index_name
+
+    es_data = [
+        {
+            'uuid': str(uuid.uuid4()),
+            'name': 'Drama'
+        }
+    for _ in range(60)]
+
+    bulk_query: list[dict] = []
+    for row in es_data:
+        data: dict[str, Any] = {'_index': index_name, '_id': row['uuid']}
+        data.update({'_source': row})
+        bulk_query.append(data)
+
+    return bulk_query
+
+
 @pytest_asyncio.fixture(scope="session")
 def persons_index_settings():
     index = es_settings.persons_index_name
@@ -169,6 +189,11 @@ def persons_route():
 @pytest_asyncio.fixture(scope="session")
 def films_route():
     return settings.films_uri
+
+
+@pytest_asyncio.fixture(scope="session")
+def genres_route():
+    return settings.genres_uri
 
 
 @pytest_asyncio.fixture(scope='session')

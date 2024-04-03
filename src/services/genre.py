@@ -3,14 +3,14 @@ from functools import lru_cache
 import elasticsearch
 from fastapi import Depends
 
-from src.core.query_builder.genre import GenreQueryBuilder
-from src.core.repository.redis import get_repo
-from src.core.searcher.elastic import get_searcher
 from src.api.v1.params import PageParams
-from src.core.repository.base import Repository
-from src.core.searcher.base import Searcher
-from src.models.genre import Genre
 from src.core.config import settings
+from src.core.query_builder.genre import GenreQueryBuilder
+from src.core.repository.base import Repository
+from src.core.repository.redis import get_repo
+from src.core.searcher.base import Searcher
+from src.core.searcher.elastic import get_searcher
+from src.models.genre import Genre
 
 
 class GenreService:

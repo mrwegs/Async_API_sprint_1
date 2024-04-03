@@ -1,4 +1,5 @@
 import pytest
+
 from tests.functional.settings import settings
 
 

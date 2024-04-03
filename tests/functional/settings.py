@@ -1,14 +1,9 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from tests.functional.testdata.es_mapping import (
-    GENRES,
-    GENRES_SETTINGS,
-    MOVIES,
-    MOVIES_SETTINGS,
-    PERSONS,
-    PERSONS_SETTINGS
-)
+from tests.functional.testdata.es_mapping import (GENRES, GENRES_SETTINGS,
+                                                  MOVIES, MOVIES_SETTINGS,
+                                                  PERSONS, PERSONS_SETTINGS)
 
 
 class EnvSettings(BaseSettings):
@@ -52,4 +47,8 @@ settings = Settings()
 
 es_settings = ESIndexSettings()
 
-dev_settings = Settings()
+dev_settings = Settings(
+    redis_host='127.0.0.1',
+    elastic_host='127.0.0.1',
+    service_url='http://127.0.0.1:8001'
+)

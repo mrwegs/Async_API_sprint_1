@@ -8,7 +8,8 @@ from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_bulk
 from redis.asyncio import Redis
 
-from tests.functional.settings import dev_settings as settings, es_settings
+from tests.functional.settings import dev_settings as settings
+from tests.functional.settings import es_settings
 
 
 @pytest_asyncio.fixture(scope='session')

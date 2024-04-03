@@ -4,15 +4,15 @@ from typing import Unpack
 import elasticsearch
 from fastapi import Depends
 
+from src.api.v1.params import FilterParams
+from src.core.config import settings
+from src.core.query_builder.person import PersonQueryBuilder
+from src.core.query_builder.sortbuilder import QueryRequest
 from src.core.repository.base import Repository
 from src.core.repository.redis import get_repo
 from src.core.searcher.elastic import SortingSearcher, get_sorting_searcher
-from src.api.v1.params import FilterParams
-from src.core.config import settings
 from src.models.film import FilmResponse
 from src.models.person import Person
-from src.core.query_builder.sortbuilder import QueryRequest
-from src.core.query_builder.person import PersonQueryBuilder
 
 
 class PersonService:

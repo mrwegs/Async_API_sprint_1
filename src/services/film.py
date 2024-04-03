@@ -4,14 +4,14 @@ from typing import Unpack
 import elasticsearch
 from fastapi import Depends
 
-from src.core.repository.redis import get_repo
-from src.core.searcher.elastic import SortingSearcher, get_sorting_searcher
 from src.api.v1.params import FilterParams
 from src.core.config import settings
-from src.core.repository.base import Repository
-from src.models.film import Film, FilmDetails
-from src.core.query_builder.sortbuilder import QueryRequest
 from src.core.query_builder.film import FilmQueryBuilder
+from src.core.query_builder.sortbuilder import QueryRequest
+from src.core.repository.base import Repository
+from src.core.repository.redis import get_repo
+from src.core.searcher.elastic import SortingSearcher, get_sorting_searcher
+from src.models.film import Film, FilmDetails
 
 
 class FilmService:
@@ -26,9 +26,6 @@ class FilmService:
     def __init__(self, repo: Repository, searcher: SortingSearcher):
         self.repo = repo
         self.searcher = searcher
-
-    def __repr__(self):
-        return self.__class__.__name__
 
     async def get_by_id(self, film_id: str) -> FilmDetails | None:
         try:

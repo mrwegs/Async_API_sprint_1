@@ -1,6 +1,6 @@
 import pytest
 
-from tests.functional.settings import settings, es_settings
+from tests.functional.settings import es_settings, settings
 
 
 @pytest.mark.parametrize(

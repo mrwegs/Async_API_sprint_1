@@ -3,8 +3,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_cache.decorator import cache
-from src.core.config import settings
+
 from src.api.v1.params import FilterParams, SearchParams
+from src.core.config import settings
 from src.models.film import FilmDetails, FilmResponse
 from src.services.enumtypes import FilmworkFields, QueryContext
 from src.services.film import FilmService, get_film_service

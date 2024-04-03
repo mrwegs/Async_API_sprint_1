@@ -1,5 +1,5 @@
-from redis.asyncio import Redis
 from fastapi_cache import FastAPICache
+from redis.asyncio import Redis
 
 redis: Redis | None = None
 

@@ -27,6 +27,9 @@ class PersonService:
         self.repo = repo
         self.searcher = searcher
 
+    def __repr__(self):
+        return self.__class__.__name__
+
     async def get_person_by_id(self, person_id: str) -> Person | None:
         person = await self.searcher.get(person_id, index=settings.persons_index)
 

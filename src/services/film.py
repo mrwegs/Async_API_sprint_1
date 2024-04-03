@@ -26,6 +26,9 @@ class FilmService:
         self.repo = repo
         self.searcher = searcher
 
+    def __repr__(self):
+        return self.__class__.__name__
+
     async def get_by_id(self, film_id: str) -> FilmDetails | None:
         film = await self.searcher.get(film_id, index=settings.movies_index)
 

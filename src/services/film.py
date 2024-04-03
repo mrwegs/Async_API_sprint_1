@@ -1,6 +1,7 @@
 from functools import lru_cache
 from typing import Unpack
 
+import elasticsearch
 from fastapi import Depends
 
 from src.core.repository.redis import get_repo
@@ -27,7 +28,10 @@ class FilmService:
         self.searcher = searcher
 
     async def get_by_id(self, film_id: str) -> FilmDetails | None:
-        film = await self.searcher.get(film_id, index=settings.movies_index)
+        try:
+            film = await self.searcher.get(film_id, index=settings.movies_index)
+        except elasticsearch.NotFoundError:
+            film = None
 
         if not film:
             return None

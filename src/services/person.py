@@ -1,6 +1,7 @@
 from functools import lru_cache
 from typing import Unpack
 
+import elasticsearch
 from fastapi import Depends
 
 from src.core.repository.base import Repository
@@ -28,7 +29,10 @@ class PersonService:
         self.searcher = searcher
 
     async def get_person_by_id(self, person_id: str) -> Person | None:
-        person = await self.searcher.get(person_id, index=settings.persons_index)
+        try:
+            person = await self.searcher.get(person_id, index=settings.persons_index)
+        except elasticsearch.NotFoundError:
+            person = None
 
         if not person:
             return None

@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 import pytest
 
 
@@ -15,7 +17,7 @@ async def test_genre_by_id(
     url = genres_route + f'/{doc["_id"]}'
     body, status = await make_get_request(url)
 
-    assert status == 200
+    assert status == HTTPStatus.OK
     assert body == doc['_source']
 
 
@@ -32,14 +34,14 @@ async def test_genre_not_found(
     url = genres_route + '/test'
     _, status = await make_get_request(url)
 
-    assert status == 404
+    assert status == HTTPStatus.NOT_FOUND
 
 
 @pytest.mark.parametrize(
     'query_data, expected_answer',
     [
         ({'page_size': 20},
-         {'status': 200, 'length': 20})
+         {'status': HTTPStatus.OK, 'length': 20})
     ]
 )
 @pytest.mark.asyncio

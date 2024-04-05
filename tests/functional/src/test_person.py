@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 import pytest
 
 
@@ -14,7 +16,7 @@ async def test_person(
     uri = '/api/v1/persons/' + item['_id']
     body, status = await make_get_request(uri=uri)
 
-    assert status == 200
+    assert status == HTTPStatus.OK
     for film in item['_source']['films']:
         film.pop('title')
         film.pop('imdb_rating')
@@ -35,7 +37,7 @@ async def test_person_film(
     uri = f'/api/v1/persons/{item["_id"]}/film'
     body, status = await make_get_request(uri=uri)
 
-    assert status == 200
+    assert status == HTTPStatus.OK
     assert len(body) == 2
     assert body[0]['uuid'] == 'fb111f22-121e-44a7-b78f-b19191810fbf'
 
@@ -45,11 +47,11 @@ async def test_person_film(
     [
         (
                 {},
-                {'status': 200, 'length': 3}
+                {'status': HTTPStatus.OK, 'length': 3}
         ),
         (
                 {'uri': '/film'},
-                {'status': 200, 'length': 2}
+                {'status': HTTPStatus.OK, 'length': 2}
         ),
     ]
 )

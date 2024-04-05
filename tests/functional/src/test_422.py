@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 import pytest
 
 from tests.functional.settings import settings
@@ -30,7 +32,7 @@ async def test_unprocessable_entity(
 
     _, status = await make_get_request(api_route, query_data)
 
-    assert status == 422
+    assert status == HTTPStatus.UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.parametrize(
@@ -60,4 +62,4 @@ async def test_unprocessable_entity_search(
 ):
     _, status = await make_get_request(api_route, query_data)
 
-    assert status == 422
+    assert status == HTTPStatus.UNPROCESSABLE_ENTITY

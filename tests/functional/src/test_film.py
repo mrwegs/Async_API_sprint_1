@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 import pytest
 
 
@@ -6,39 +8,39 @@ import pytest
     [
         (
                 {},
-                {'status': 200, 'length': 50}
+                {'status': HTTPStatus.OK, 'length': 50}
         ),
         (
                 {'page_size': 7},
-                {'status': 200, 'length': 7}
+                {'status': HTTPStatus.OK, 'length': 7}
         ),
         (
                 {'page_size': 17},
-                {'status': 200, 'length': 17}
+                {'status': HTTPStatus.OK, 'length': 17}
         ),
         (
                 {'page_size': 0},
-                {'status': 422, 'length': 1}
+                {'status': HTTPStatus.UNPROCESSABLE_ENTITY, 'length': 1}
         ),
         (
                 {'genre': 'Action'},
-                {'status': 200, 'length': 50}
+                {'status': HTTPStatus.OK, 'length': 50}
         ),
         (
                 {'genre': 'Action', 'page_size': 12},
-                {'status': 200, 'length': 12}
+                {'status': HTTPStatus.OK, 'length': 12}
         ),
         (
                 {'genre': 'Sci-Fi'},
-                {'status': 200, 'length': 50}
+                {'status': HTTPStatus.OK, 'length': 50}
         ),
         (
                 {'genre': 'Sci-Fi', 'page_size': 15},
-                {'status': 200, 'length': 15}
+                {'status': HTTPStatus.OK, 'length': 15}
         ),
         (
                 {'genre': 'Drama'},
-                {'status': 404, 'length': 1}
+                {'status': HTTPStatus.NOT_FOUND, 'length': 1}
         ),
     ]
 )
@@ -74,7 +76,7 @@ async def test_film_item(
     uri = '/api/v1/films/' + item['_id']
     body, status = await make_get_request(uri=uri)
 
-    assert status == 200
+    assert status == HTTPStatus.OK
     assert item['_source'] == body
 
 
@@ -95,5 +97,5 @@ async def test_film_cache(
     await es_delete_data(id=item['_id'], index=index)
 
     body, status = await make_get_request(uri=uri)
-    assert status == 200
+    assert status == HTTPStatus.OK
     assert item['_source'] == body

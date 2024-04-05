@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 import pytest
 
 from tests.functional.settings import es_settings, settings
@@ -8,22 +10,22 @@ from tests.functional.settings import es_settings, settings
     [
         (
             {"title": "The Star", "page_size": 20},
-            {"status": 200, "length": 20},
+            {"status": HTTPStatus.OK, "length": 20},
             settings.films_uri,
         ),
         (
             {"title": "The Test"},
-            {"status": 404, "length": 1},
+            {"status": HTTPStatus.NOT_FOUND, "length": 1},
             settings.films_uri,
         ),
         (
             {"name": "Anna De Armas", "page_size": 20},
-            {"status": 200, "length": 20},
+            {"status": HTTPStatus.OK, "length": 20},
             settings.persons_uri
         ),
         (
             {"name": "Test Testov"},
-            {"status": 404, "length": 1},
+            {"status": HTTPStatus.NOT_FOUND, "length": 1},
             settings.persons_uri
         ),
     ],
@@ -47,13 +49,13 @@ async def test_search(
         [
             (
                 {'title': 'The Star', 'page_size': 20},
-                {'status': 200, 'length': 20},
+                {'status': HTTPStatus.OK, 'length': 20},
                 es_settings.movies_index_name,
                 settings.films_uri,
             ),
             (
                 {'name': 'Anna De Armas', 'page_size': 20},
-                {'status': 200, 'length': 20},
+                {'status': HTTPStatus.OK, 'length': 20},
                 es_settings.persons_index_name,
                 settings.persons_uri,
             ),

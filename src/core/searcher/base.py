@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Generic
 
 from src.core.types import Model
@@ -20,8 +20,10 @@ class Searcher(ABC, Generic[Model]):
     def __init__(self, connection):
         self._connection = connection
 
+    @abstractmethod
     def search(self, query_builder, **kwargs):
         raise NotImplementedError
 
+    @abstractmethod
     def get(self, key, **kwargs):
         raise NotImplementedError

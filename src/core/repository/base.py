@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Generic
 
 from src.core.types import Model
@@ -19,8 +19,10 @@ class Repository(ABC, Generic[Model]):
     def __init__(self, connection) -> None:
         self._connection = connection
 
+    @abstractmethod
     def get(self, key) -> Model:
         raise NotImplementedError
 
+    @abstractmethod
     def put(self, key, value):
         raise NotImplementedError
